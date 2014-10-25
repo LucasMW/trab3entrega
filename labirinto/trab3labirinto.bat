@@ -1,0 +1,1 @@
+trab3-2.exe /stestelabirinto.script > loglabirinto.txt

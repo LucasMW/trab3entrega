@@ -1,0 +1,16 @@
+==declarar labirinto
+=declararparm labirinto int 1
+
+==Declarar Ponteiros
+=declararparm pNull int	0
+=declararparm pNaoNull int 1
+
+==Declarar CondRets
+=declararparm OK int 0
+=declararparm FaltouMemoria int 1
+
+==Criar Labirinto
+=criarlabirinto labirinto
+
+==Destruir Labirinto
+=destruirlabirinto labirinto

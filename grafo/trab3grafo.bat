@@ -1,0 +1,1 @@
+trab3-3.exe /stestegrafo.script > loggrafo.txt

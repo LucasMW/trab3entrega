@@ -1,0 +1,4 @@
+﻿Data ; Horas Trabalhadas ; Tipo Tarefa ; Descrição da Tarefa Realizada
+
+23/OUT/2014; 2h; Revisar módulo; Revisei o módulo grafo e adicionei funções
+24/OUT/2014; 3h; Codificar módulo; Rascunhei  o módulo Labirinto.c

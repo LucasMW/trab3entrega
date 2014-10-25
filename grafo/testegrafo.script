@@ -1,0 +1,181 @@
+== declarar grafos
+
+=declararparm   grafo1  int 1
+=declararparm   grafo2  int 2
+=declararparm   grafo3  int 3
+=declararparm   grafo4  int 4
+=declararparm   grafo5  int 5
+=declararparm   grafo6  int 6
+=declararparm   grafo7  int 7
+=declararparm   grafo8  int 8
+
+==Declarar Ponteiros
+=declararparm   pNULL          int  0
+=declararparm   pNaoNULL       int  1
+
+==Declarar CondRets
+=declararparm   OK             	int  0
+=declararparm   FatouMemoria    int  1
+=declararparm   Vazio       	int  2
+=declararparm	ArestaJaExiste	int  3
+=declararparm	NoNaoExiste		int  4
+=declararparm	ArestaNaoExiste	int  5
+=declararparm	JaEsta			int	 6
+
+==Declarar Strings
+=declararparm   str0    string  "abcdefg"
+=declararparm   str1    string  "qwerty"
+=declararparm   str2    string  "xxx"
+=declararparm   str3    string  "xpto"
+
+==criar grafo1
+
+=criargrafo grafo1
+=criargrafo grafo2
+=criargrafo grafo3
+=criargrafo grafo4
+=criargrafo grafo5
+
+==Ezvaziar Grafo
+=esvaziargrafo grafo3 Vazio
+
+==Testes com Grafo vazio
+=excluirno      grafo3 10 Vazio
+=irpara		    grafo3 10 Vazio
+=imprimirgrafo  grafo1 Vazio
+=irvizinho      grafo1 Vazio 1
+=excluirno	    grafo2 0 Vazio
+=obteridcorr    grafo2 Vazio 0 0
+=inseriraresta  grafo2 17 16 0 Vazio
+=excluiraresta  grafo2 1 8 Vazio
+=obtervalorno   grafo2 1 str2 Vazio
+=recuperar
+=obtervalorcorr grafo2 str0 Vazio
+=recuperar
+
+==DestruirGrafo
+=destruirgrafo grafo3
+
+==Imprimir Grafo
+
+=imprimirgrafo grafo2 Vazio
+=imprimirgrafo grafo4 Vazio
+=imprimirgrafo grafo5 Vazio
+
+
+==InserirNo
+=inserirno grafo2 str2  OK 
+=inserirno grafo1 str1 OK	
+=inserirno grafo4 str0  OK	
+=excluirno grafo4 1 OK
+=obteridcorr grafo4 Vazio 0
+=inserirno grafo5 str3 OK	
+
+==Imprimir Grafos denovo
+=imprimirgrafo grafo1 OK
+=imprimirgrafo grafo2 OK
+=imprimirgrafo grafo4 Vazio
+=imprimirgrafo grafo5 OK
+
+==Inserir Series De Nos no grafo2 e testes com ObterValor e IdCorrente
+=inserirno grafo2 str2  OK	
+=inserirno grafo2 str1 OK	
+=inserirno grafo2 str0  OK	
+=inserirno grafo2 str3 OK	
+=inserirno grafo2 str2  OK	
+=inserirno grafo2 str1 OK	
+=inserirno grafo2 str0  OK	
+=inserirno grafo2 str3 OK	
+=inserirno grafo2 str2  OK	
+=inserirno grafo2 str1 OK	
+=obtervalorcorr grafo2 str1 OK
+=inserirno grafo2 str0  OK
+=obtervalorcorr grafo2 str0 OK	
+=inserirno grafo2 str3 OK	
+=inserirno grafo2 str2  OK	
+=inserirno grafo2 str1 OK
+=obteridcorr grafo2 OK 15 	
+=inserirno grafo2 str0  OK  
+=obteridcorr grafo2 OK 16 
+=inserirno grafo2 str3 OK	
+=imprimirgrafo grafo2 OK
+=obteridcorr grafo2 OK 17 
+
+
+==ObterValores
+=obtervalorno grafo2 1 str2 OK
+=obtervalorno grafo1 12 str2 NoNaoExiste
+=obtervalorno grafo2 2 str2 OK
+=obtervalorno grafo2 17 str3 OK
+=obtervalorno grafo2 16 str0 OK
+=obtervalorno grafo2 15 str1 OK
+
+
+==Inserindo arestas no grafo
+
+=inseriraresta grafo2 17 16 0 OK
+=inseriraresta grafo2 16 15 0 OK
+=inseriraresta grafo2 15 14 0 OK
+=imprimirgrafo grafo2 OK
+
+==Testes com movimentacao
+
+=irvizinho 	   grafo2 JaEsta 17
+=irvizinho	   grafo2 NoNaoExiste 20
+=irvizinho     grafo2 OK 16
+=irvizinho     grafo2 OK 15
+=irvizinho     grafo2 OK 14
+=irvizinho	   grafo2 ArestaNaoExiste 1
+
+==Exclusao de nos
+=excluirno     grafo2 10 OK
+=excluirno     grafo2 10 NoNaoExiste
+=excluirno     grafo2 20 NoNaoExiste
+=excluircorr   grafo2 OK
+=obteridcorr   grafo2 OK 1
+
+==Mais testes com movimentacao
+=irpara		   grafo2 2 OK
+=irpara		   grafo2 30 NoNaoExiste
+=obteridcorr   grafo2 OK 2
+=inseriraresta grafo2 1 3 0 OK
+=inseriraresta grafo2 1 4 0 OK
+=inseriraresta grafo2 2 5 0 OK
+=obteridcorr   grafo2 OK 2
+=irvizinho     grafo2 JaEsta 2
+=irvizinho	   grafo2 OK 5
+=irpara		   grafo2 1 OK
+=imprimirgrafo grafo2 OK
+
+=inseriraresta grafo2 1 7 0 OK
+=irvizinho	   grafo2 OK 7
+=irpara 	   grafo2 8 OK
+=inseriraresta grafo2 1 8 0 OK
+=irvizinho	   grafo2 OK 1
+=irpara		   grafo2 15 OK
+=irpara		   grafo2 1 OK
+=irpara		   grafo2 15 OK
+=inseriraresta grafo2 15 2 0 OK
+=irvizinho	   grafo2 OK 2
+=inseriraresta grafo2 5 8 0 OK
+
+=inseriraresta grafo2 4 9 0 OK
+=inseriraresta grafo2 30 0 0 NoNaoExiste
+=inseriraresta grafo2 1 2 0 OK
+=imprimirgrafo grafo2 OK
+
+==Testando a exclusão de arestas
+
+=excluiraresta grafo2 1 3 OK
+=imprimirgrafo grafo2 OK
+=excluiraresta grafo2 1 2 OK
+=imprimirgrafo grafo2 OK
+=excluiraresta grafo2 1 4 OK
+=imprimirgrafo grafo2 OK
+=excluiraresta grafo2 1 7 OK
+=imprimirgrafo grafo2 OK
+=excluiraresta grafo2 1 8 OK
+=excluiraresta grafo2 1 8 ArestaNaoExiste
+=imprimirgrafo grafo2 OK
+=esvaziargrafo grafo2 OK
+=imprimirgrafo grafo2 Vazio

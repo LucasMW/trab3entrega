@@ -1,0 +1,63 @@
+﻿Legenda
+TRAB3-1 executável da aplicação com a interface de usuário
+TRAB3-2 construto de teste do módulo labirinto
+TRAB3-3 construto de teste do módulo grafo
+TRAB3-4 construto de teste do módulo lista
+
+Para Executar o projeto
+
+Para ler o Diagrama da Arquitetura da aplicação:
+clicar em diag_arq.pdf
+
+Para ler o Modelo Físico e suas Assertivas:
+Clicar em MFA.pdf
+
+Para ver o Exemplo de Labirinto:
+Clicar em exemplo.pdf
+
+Para ler os Requisitos do projeto
+Clicar em requisitos.pdf
+
+Para ler os Relatórios de trabalho dos integrantes do grupo:
+clicar em relatório_lorenzo.txt
+clicar em relatório_lucas.txt
+clicar em relatório_felipe.txt
+
+Para Executar os do TADLABIRINTO:
+clicar em labirinto
+clicar em trab3labirinto.bat 
+e ler o relatório gerado (um arquivo.txt)
+
+Para ler o script de teste:
+abrir testelabirinto.script com um editor de texto
+
+Para Ler os arquivos fontes do TADLABIRINTO
+clicar em labirinto
+clicar em fontes
+e ler os módulos (arquivos .c e .h)
+
+Para Executar os do TADGRAFO:
+clicar em grafo
+clicar em trab3grafo.bat 
+e ler o relatório gerado (um arquivo.txt)
+
+Para ler o script de teste:
+abrir testegrafo.script com um editor de texto
+
+Para Ler os arquivos fontes do TADGRAFO
+clicar em grafo
+clicar em fontes
+e ler os módulos (arquivos .c e .h)
+
+Para Executar os do TADLISTA:
+clicar em lista
+clicar em trab3lista.bat 
+e ler o relatório gerado (um arquivo.txt)
+
+Para ler o script de teste:
+abrir testelista.script com um editor de texto
+
+Para Ler os arquivos fontes do TADLISTA
+clicar em lista
+clicar em fontes
+e ler os módulos (arquivos .c e .h)

@@ -1,0 +1,26 @@
+
+
+LES - Laboratório de Engenharia de Software DI/PUC-Rio
+      Arcabouço de teste de módulos C  (c) 2006
+
+---------------------------------------------
+      Construto sob teste: trab3-2.exe
+
+      Arquivo de teste:    testelabirinto.script
+
+
+    1  ==declarar labirinto
+    4  ==Declarar Ponteiros
+    8  ==Declarar CondRets
+   12  ==Criar Labirinto
+   15  ==Destruir Labirinto
+
+!!! Número de linhas lidas:          16
+!!! Número de casos de teste:         5
+!!! Número comandos corretos:         7
+!!! Número de falhas encontradas:     0
+
+!!! Não foram encontrados problemas
+
+
+!!! Numero de espacos ainda alocados: 0
