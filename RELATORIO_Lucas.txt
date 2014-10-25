@@ -2,3 +2,6 @@
 
 23/OUT/2014; 2h; Revisar módulo; Revisei o módulo grafo e adicionei funções
 24/OUT/2014; 3h; Codificar módulo; Rascunhei  o módulo Labirinto.c
+25/OUT/2014; 2h; Codificar módulo; Rascunhei o módulo testlab.c
+25/OUT/2014; 2h; Projetar módulo; Projetei diretórios de desenvolvimento, de entrega , repositório...
+25/OUT/2014; 1h; Redigir Script de Teste; Rascunhei o script do módulo labirinto
