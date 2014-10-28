@@ -1,19 +1,19 @@
 /***************************************************************************
-*  $MCI MÛdulo de implementaÁ„o: LAB Labirinto (implementado por grafo)
+*  $MCI M√≥dulo de implementa√ß√£o: LAB Labirinto (implementado por grafo)
 *
 *  Arquivo gerado:              labirinto.c
 *  Letras identificadoras:      LAB
 *
-*  Nome da base de software:    ArcabouÁo para a automaÁ„o de testes de programas redigidos em C
+*  Nome da base de software:    Arcabou√ßo para a automa√ß√£o de testes de programas redigidos em C
 *  Arquivo da base de software: D:\AUTOTEST\PROJETOS\LISTA.BSW
 *
-*  Projeto: INF 1301 / 1628 AutomatizaÁ„o dos testes de mÛdulos C
+*  Projeto: INF 1301 / 1628 Automatiza√ß√£o dos testes de m√≥dulos C
 *  Gestor:  LES/DI/PUC-Rio
 *  Autores: Lucas Menezes (LM); Lorenzo Saraiva (LS); Felipe Santos(FS).
 *
-*  $HA HistÛrico de evoluÁ„o:
-*     Vers„o  Autor    Data     ObservaÁıes
-*     1       LM   24/OUT/2014 inÌcio desenvolvimento
+*  $HA Hist√≥rico de evolu√ß√£o:
+*     Vers√£o  Autor    Data     Observa√ß√µes
+*     1       LM   24/OUT/2014 in√≠cio desenvolvimento
 
 ***************************************************************************/
 #include <stdio.h>
@@ -29,7 +29,7 @@
 
 /***********************************************************************
 *
-*  $TC Tipo de dados: GRA Descritor da cabeÁa do labirinto
+*  $TC Tipo de dados: GRA Descritor da cabe√ßa do labirinto
 *
 *
 ***********************************************************************/
@@ -45,37 +45,37 @@ typedef enum
    typedef struct LAB_tagLabirinto {
 
           GRA_tppGrafo pGrafo ;
-               /* Ponteiro para a cabeÁa do grafo de que armazena as posiÁıes do labirinto*/
+               /* Ponteiro para a cabe√ßa do grafo de que armazena as posi√ß√µes do labirinto*/
 
          char pronto;
-               /* Vari·vel de Estado se o O labirinto est· pronto pra executar*/
+               /* Vari√°vel de Estado se o O labirinto est√° pronto pra executar*/
 		 int Rodada;
-				/* conta o n˙mero de jogadas j· feitas */
+				/* conta o n√∫mero de jogadas j√° feitas */
 
          
 		 
 		 LAB_Estado estado;
 		 int idCorrente;
-			/* id da posiÁ„o corrente */
+			/* id da posi√ß√£o corrente */
 
    } LAB_tpLabirinto ;
 
    /***********************************************************************
 *
-*  $TC Tipo de dados: LAB Descritor da posiÁ„o jog·vel do Labirinto
+*  $TC Tipo de dados: LAB Descritor da posi√ß√£o jog√°vel do Labirinto
 *
 *
 ***********************************************************************/
    typedef enum
 	   {
 		   PosNormal,
-		   /* PosiÁao sem nada de anormal */
+		   /* Posi√ßao sem nada de anormal */
 		   PosInicio,
-		   /*PosiÁ„o do inÌcio do labirinto */
+		   /*Posi√ß√£o do in√≠cio do labirinto */
 		   PosSaida
-		  /* PosiÁ„o que demarca o fim do labirinto */
+		  /* Posi√ß√£o que demarca o fim do labirinto */
 	   } PosJog_Tipo;
-			/* Tipo da PoisÁ„o: 0 normal, 1 entrada, 2 saÌda */
+			/* Tipo da Pois√ß√£o: 0 normal, 1 entrada, 2 sa√≠da */
 	   
 
    struct LAB_PosicaoJogavel
@@ -88,16 +88,16 @@ typedef enum
 
   
 
-   /***** ProtÛtipos das funÁıes encapuladas no mÛdulo *****/
+   /***** Prot√≥tipos das fun√ß√µes encapuladas no m√≥dulo *****/
 
    static int VerificaPronto( LAB_tppLabirinto labirinto);
 
-/*****  CÛdigo das funÁıes exportadas pelo mÛdulo  *****/
+/*****  C√≥digo das fun√ß√µes exportadas pelo m√≥dulo  *****/
 
 
 /***************************************************************************
 *
-*  FunÁ„o: LAB  &Criar Labirinto
+*  Fun√ß√£o: LAB  &Criar Labirinto
 *  ****/
 
 LAB_tpCondRet LAB_CriarLabirinto( LAB_tppLabirinto* refLab)
@@ -113,14 +113,14 @@ LAB_tpCondRet LAB_CriarLabirinto( LAB_tppLabirinto* refLab)
 		/* if */
 
 	/* if */
-	/* N„o houve problemas , retorne OK */
+	/* N√£o houve problemas , retorne OK */
 	tempLab->idCorrente=0; //Id Corrents must not exist
 	tempLab->estado=LAB_NaoPronto;
 	*refLab=tempLab; //return by reference
 	return LAB_CondRetOK;
 }
 
-/* Fim funÁ„o: LAB &Destruir Labirinto */
+/* Fim fun√ß√£o: LAB &Destruir Labirinto */
 
 LAB_tpCondRet LAB_DestruirLabirinto( LAB_tppLabirinto labirinto)
 {
@@ -135,4 +135,29 @@ LAB_tpCondRet LAB_DestruirLabirinto( LAB_tppLabirinto labirinto)
 	
 }
 
-/* Fim funÁ„o: LAB &Destruir Labirinto */
+/* Fim fun√ß√£o: LAB &Destruir Labirinto */
+
+/***************************************************************************
+*
+*  Fun√ß√£o: LAB &Inserir Posicao Norte
+*  ****/
+
+LAB_tpCondRet LAB_InserirPosicaoNorte ( LAB_tppLabirinto labirinto )
+{
+	int temp;
+	LAB_PosJog posicao;
+	posicao->tipo = PosNormal;
+	if (labirinto->idCorrente = 0){
+		if( GRA_InserirNo( labirinto->pGrafo,posicao,&labirinto->idCorrente ) != GRA_CondRetOK)
+			return LAB_CondRetFaltouMemoria;
+		return LAB_CondRetOK;
+	}
+	temp = labirinto->idCorrente;
+	if (GRA_InserirNo( labirinto->pGrafo,posicao,&labirinto->idCorrente ) != GRA_CondRetOK)
+		return LAB_CondRetOK;
+	if (GRA_InserirAresta(labirinto->pGrafo,temp,labirinto->idCorrente, 'N')!= GRA_CondRetOK)
+		return LAB_CondRetFaltouMemoria; /* Aqui deve ser checada a condret retornada para ver corretamente o erro */
+	return LAB_CondRetOK;
+}
+
+/* Fim fun√ß√£o: LAB &Inserir Posicao Norte */
