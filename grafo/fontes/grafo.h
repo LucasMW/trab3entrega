@@ -14,7 +14,7 @@
 * $HA Histórico de evolução:
 * Versão Autor Data Observações
 * 1     LM,LS 22/set/2014 Início do Desenvolvimento
-* 2     LM	  23/out/2014 Início da melhoria do módulo
+*
 * $ED Descrição do módulo
 * Implementa Um grafo genérico não dirigido, i.e. , 
 * (para todo nó A e B) A está ligado em B <=> B está ligado em A.
@@ -223,6 +223,29 @@ GRA_tpCondRet  GRA_InserirAresta( GRA_tppGrafo grafo, int no_x_Id, int no_y_Id, 
 *
 ***********************************************************************/
 GRA_tpCondRet  GRA_ExcluirAresta (GRA_tppGrafo grafo, int no_x_Id, int no_y_Id);
+
+/***********************************************************************
+*
+*  $FC Função: GRA  &Obter Id Aresta
+*
+*  $ED Descrição da função
+*     A função obtem o Id de uma aresta existente entre os nós cujos Id foram passados como parâmetros.
+*	  
+*  $EP Parâmetros
+*	  grafo			- ponteiro para a cabeça do grafo cuja aresta será destruida
+*	  no_x_Id		- ID de um dos vértices cuja aresta será destruída
+*	  no_y_Id		- ID do outro vértice cuja aresta será destruída
+*	  pId			- ponteiro para inteiro para retornar o valor por referência
+*
+*  $FV Valor retornado
+*     Se executou corretamente retorna GRA_CondRetOK
+*	  Se um dos nós nao existe, retorna GRA_CondRetNoNaoExiste
+*	  Se a aresta não existe, retorna GRA_CondRetArestaNaoExiste
+*	  Se o grafo estiver vazio retornará GRA_CondRetGrafoVazio
+*    
+*
+***********************************************************************/
+GRA_tpCondRet  GRA_ObterIdAresta (GRA_tppGrafo grafo, int no_x_Id, int no_y_Id, int * pId);
 
 /***********************************************************************
 *
