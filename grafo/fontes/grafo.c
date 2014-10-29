@@ -13,8 +13,8 @@
 *
 *  $HA Histórico de evolução:
 *     Versão  Autor    Data     Observações
-*     1       LM   22/SET/2014 início desenvolvimento
-
+*     1       LM,LS   22/SET/2014 início desenvolvimento
+*	  2		  LM,LS	  23/OUT/2014 início da melhoria do módulo	
 ***************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>

@@ -14,7 +14,7 @@
 * $HA Histórico de evolução:
 * Versão Autor Data Observações
 * 1     LM,LS 22/set/2014 Início do Desenvolvimento
-*
+* 2		LM,LS 23/OUT/2014 início da melhoria do módulo
 * $ED Descrição do módulo
 * Implementa Um grafo genérico não dirigido, i.e. , 
 * (para todo nó A e B) A está ligado em B <=> B está ligado em A.
