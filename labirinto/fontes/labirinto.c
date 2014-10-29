@@ -66,22 +66,17 @@ typedef enum
 *
 *
 ***********************************************************************/
-   typedef enum
-	   {
-		   PosNormal,
-		   /* Posiçao sem nada de anormal */
-		   PosInicio,
-		   /*Posição do início do labirinto */
-		   PosSaida
-		  /* Posição que demarca o fim do labirinto */
-	   } PosJog_Tipo;
-			/* Tipo da Poisção: 0 normal, 1 entrada, 2 saída */
+  
 	   
 
    struct LAB_PosicaoJogavel
    {
 	      
 	   PosJog_Tipo tipo;
+	   int idNorte;
+	   int idSul;
+	   int idOeste;
+	   int idLeste;
    };
    typedef struct LAB_PosicaoJogavel* LAB_PosJog;
 
@@ -142,11 +137,17 @@ LAB_tpCondRet LAB_DestruirLabirinto( LAB_tppLabirinto labirinto)
 *  Função: LAB &Inserir Posicao Norte
 *  ****/
 
-LAB_tpCondRet LAB_InserirPosicaoNorte ( LAB_tppLabirinto labirinto )
+LAB_tpCondRet LAB_InserirPosicaoNorte ( LAB_tppLabirinto labirinto ,  PosJog_Tipo tipo)
 {
+	/* Insere uma Posição ao Norte da Corrente */
 	int temp;
 	LAB_PosJog posicao;
-	posicao->tipo = PosNormal;
+	posicao=(LAB_PosJog)malloc(sizeof(struct LAB_PosicaoJogavel));
+	posicao->tipo = tipo;
+	posicao->idNorte=0;
+	posicao->idOeste=0;
+	posicao->idLeste=0;
+	posicao->idSul= labirinto->idCorrente;
 	if (labirinto->idCorrente = 0){
 		if( GRA_InserirNo( labirinto->pGrafo,posicao,&labirinto->idCorrente ) != GRA_CondRetOK)
 			return LAB_CondRetFaltouMemoria;
@@ -155,7 +156,7 @@ LAB_tpCondRet LAB_InserirPosicaoNorte ( LAB_tppLabirinto labirinto )
 	temp = labirinto->idCorrente;
 	if (GRA_InserirNo( labirinto->pGrafo,posicao,&labirinto->idCorrente ) != GRA_CondRetOK)
 		return LAB_CondRetOK;
-	if (GRA_InserirAresta(labirinto->pGrafo,temp,labirinto->idCorrente, 'N')!= GRA_CondRetOK)
+	if (GRA_InserirAresta(labirinto->pGrafo,temp,labirinto->idCorrente, 'V')!= GRA_CondRetOK)
 		return LAB_CondRetFaltouMemoria; /* Aqui deve ser checada a condret retornada para ver corretamente o erro */
 	return LAB_CondRetOK;
 }

@@ -35,6 +35,17 @@ typedef enum {
 		 
 
    } LAB_tpCondRet ;
+
+ typedef enum
+	   {
+		   PosNormal,
+		   /* Posiçao sem nada de anormal */
+		   PosInicio,
+		   /*Posição do início do labirinto */
+		   PosSaida
+		  /* Posição que demarca o fim do labirinto */
+	   } PosJog_Tipo;
+			/* Tipo da Poisção: 0 normal, 1 entrada, 2 saída */
 /***********************************************************************
 *
 *  $FC Função: LAB  &Criar Labirinto
@@ -97,4 +108,4 @@ LAB_tpCondRet LAB_DestruirLabirinto( LAB_tppLabirinto labirinto );
 *
 ***********************************************************************/
 
-LAB_tpCondRet LAB_InserirPosicaoNorte ( LAB_tppLabirinto labirinto );
+LAB_tpCondRet LAB_InserirPosicaoNorte ( LAB_tppLabirinto labirinto, PosJog_Tipo tipo );
