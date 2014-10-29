@@ -108,4 +108,150 @@ LAB_tpCondRet LAB_DestruirLabirinto( LAB_tppLabirinto labirinto );
 *
 ***********************************************************************/
 
-LAB_tpCondRet LAB_InserirPosicaoNorte ( LAB_tppLabirinto labirinto, PosJog_Tipo tipo );
+LAB_tpCondRet LAB_InserirPosicaoNorte ( LAB_tppLabirinto labirinto );
+
+/***********************************************************************
+*
+*  $FC Função: LAB  &Inserir Posicao Sul
+*
+*  $ED Descrição da função
+*     Insere uma posição jogavel  ao sul da corrente
+*     Caso seja a primeira posição a ser inserida, se torna a corrente
+*
+*  $EP Parâmetros
+*	   labirinto			- ponteiro para a cabeça do labirinto a inserir a posição
+*                     
+*
+*  $FV Valor retornado
+*     Se executou corretamente retornará a LAB_CondRetOK
+*     Se ocorreu alguma alocação de memória não conseguir ser realizada
+*     a função retornará LAB_CondRetFaltouMemoria.
+*	  Se ja existir a posição retonará LAB_CondRetPosicaoJaExiste
+*
+***********************************************************************/
+
+LAB_tpCondRet LAB_InserirPosicaoSul ( LAB_tppLabirinto labirinto );
+
+/***********************************************************************
+*
+*  $FC Função: LAB  &Inserir Posicao Oeste
+*
+*  $ED Descrição da função
+*     Insere uma posição jogavel  ao oeste da corrente
+*     Caso seja a primeira posição a ser inserida, se torna a corrente
+*
+*  $EP Parâmetros
+*	   labirinto			- ponteiro para a cabeça do labirinto a inserir a posição
+*                     
+*
+*  $FV Valor retornado
+*     Se executou corretamente retornará a LAB_CondRetOK
+*     Se ocorreu alguma alocação de memória não conseguir ser realizada
+*     a função retornará LAB_CondRetFaltouMemoria.
+*	  Se ja existir a posição retonará LAB_CondRetPosicaoJaExiste
+*
+***********************************************************************/
+
+LAB_tpCondRet LAB_InserirPosicaoOeste ( LAB_tppLabirinto labirinto );
+
+/***********************************************************************
+*
+*  $FC Função: LAB  &Inserir Posicao Leste
+*
+*  $ED Descrição da função
+*     Insere uma posição jogavel  ao leste da corrente
+*     Caso seja a primeira posição a ser inserida, se torna a corrente
+*
+*  $EP Parâmetros
+*	   labirinto			- ponteiro para a cabeça do labirinto a inserir a posição
+*                     
+*
+*  $FV Valor retornado
+*     Se executou corretamente retornará a LAB_CondRetOK
+*     Se ocorreu alguma alocação de memória não conseguir ser realizada
+*     a função retornará LAB_CondRetFaltouMemoria.
+*	  Se ja existir a posição retonará LAB_CondRetPosicaoJaExiste
+*
+***********************************************************************/
+
+LAB_tpCondRet LAB_InserirPosicaoLeste ( LAB_tppLabirinto labirinto );
+
+/***********************************************************************
+*
+*  $FC Função: LAB  &Ir Posicao Norte
+*
+*  $ED Descrição da função
+*      Troca o idCorrente do labirinto para o que está ao norte do corrente
+*
+*  $EP Parâmetros
+*	   labirinto			- ponteiro para a cabeça do labirinto a percorrer
+*                     
+*
+*  $FV Valor retornado
+*     Se executou corretamente retornará a LAB_CondRetOK
+*     Se o labirinto estiver vazio retornará LAB_CondRetLabirintoVazio
+*	  Se nao houver caminho ao norte da corrente retornará LAB_CondRetNaoExisteCaminho
+*
+***********************************************************************/
+
+LAB_tpCondRet IrPosicaoNorte ( LAB_tppLabirinto labirinto );
+
+/***********************************************************************
+*
+*  $FC Função: LAB  &Ir Posicao Sul
+*
+*  $ED Descrição da função
+*      Troca o idCorrente do labirinto para o que está ao sul do corrente
+*
+*  $EP Parâmetros
+*	   labirinto			- ponteiro para a cabeça do labirinto a percorrer
+*                     
+*
+*  $FV Valor retornado
+*     Se executou corretamente retornará a LAB_CondRetOK
+*     Se o labirinto estiver vazio retornará LAB_CondRetLabirintoVazio
+*	  Se nao houver caminho ao sul da corrente retornará LAB_CondRetNaoExisteCaminho
+*
+***********************************************************************/
+
+LAB_tpCondRet IrPosicaoSul ( LAB_tppLabirinto labirinto );
+
+/***********************************************************************
+*
+*  $FC Função: LAB  &Ir Posicao Oeste
+*
+*  $ED Descrição da função
+*      Troca o idCorrente do labirinto para o que está ao oeste do corrente
+*
+*  $EP Parâmetros
+*	   labirinto			- ponteiro para a cabeça do labirinto a percorrer
+*                     
+*
+*  $FV Valor retornado
+*     Se executou corretamente retornará a LAB_CondRetOK
+*     Se o labirinto estiver vazio retornará LAB_CondRetLabirintoVazio
+*	  Se nao houver caminho ao oeste da corrente retornará LAB_CondRetNaoExisteCaminho
+*
+***********************************************************************/
+
+LAB_tpCondRet IrPosicaoOeste ( LAB_tppLabirinto labirinto );
+
+/***********************************************************************
+*
+*  $FC Função: LAB  &Ir Posicao Leste
+*
+*  $ED Descrição da função
+*      Troca o idCorrente do labirinto para o que está ao leste do corrente
+*
+*  $EP Parâmetros
+*	   labirinto			- ponteiro para a cabeça do labirinto a percorrer
+*                     
+*
+*  $FV Valor retornado
+*     Se executou corretamente retornará a LAB_CondRetOK
+*     Se o labirinto estiver vazio retornará LAB_CondRetLabirintoVazio
+*	  Se nao houver caminho ao leste da corrente retornará LAB_CondRetNaoExisteCaminho
+*
+***********************************************************************/
+
+LAB_tpCondRet IrPosicaoLeste ( LAB_tppLabirinto labirinto );
