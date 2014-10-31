@@ -5,3 +5,4 @@
 25/OUT/2014; 2h; Codificar módulo; Rascunhei o módulo testlab.c
 25/OUT/2014; 2h; Projetar módulo; Projetei diretórios de desenvolvimento, de entrega , repositório...
 25/OUT/2014; 1h; Redigir Script de Teste; Rascunhei o script do módulo labirinto
+30/OUT/2014; 2h; Melhoria no módulo Grafo. Implementei passeio, falta testar
