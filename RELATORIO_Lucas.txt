@@ -6,5 +6,5 @@
 25/OUT/2014; 2h; Projetar módulo; Projetei diretórios de desenvolvimento, de entrega , repositório...
 25/OUT/2014; 1h; Redigir Script de Teste; Rascunhei o script do módulo labirinto
 30/OUT/2014; 2h; Melhoria no módulo Grafo. Implementei passeio, falta testar
-31/OUT/2014; 2h; Diagnosticar problemas. Percebi que o Passeio não retornava o caminho entre dois vértices
-31/OUT/2014; 3h; Estudo do Algoritmo de DJkistra
+31/OUT/2014; 2h; Diagnosticar problemas; Percebi que o Passeio não retornava o caminho entre dois vértices
+31/OUT/2014; 3h; Estudar; Estudo do Algoritmo de DJkistra.
