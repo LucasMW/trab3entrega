@@ -730,13 +730,13 @@ GRA_tpCondRet GRA_ExisteCaminho(GRA_tppGrafo grafo, int noInicioId, int noFimId)
 	ret=GRA_DFS(grafo,&ptrIds,&tam,noInicioId);
 	if(ret!=GRA_CondRetOK)
 		return ret;
-	printf("\n< ");
+	//printf("\n< ");
 	for(i=0;i<tam;i++)
-	{	printf("%d; ",ptrIds[i]);
+	{	//printf("%d; ",ptrIds[i]);
 		if(ptrIds[i]==noFimId)
 			return GRA_CondRetCaminhoExiste;
 	}
-	printf(">");
+	//printf(">");
 	return GRA_CondRetCaminhoNaoExiste;
 	
 }
@@ -792,10 +792,23 @@ static void visit(GRA_noGrafo noCorr,int* visited,int tam,int* ordened)
 	GRA_noGrafo p; //percorredor
 	GRA_tpAresta acs; //percorredor
 	LIS_tppLista l; //percorredor
-		
-	if(visited[noCorr->verticeId]==0) //Se não visitado
-	{
-		visited[noCorr->verticeId]=1;
+		 /*printf("Iteration\n");
+ printf("Visited <");
+ for(i=0;i<tam;i++)
+ {
+	 printf("%d",visited[i]);
+ }
+ printf(">\n");
+  printf("Ordened <");
+ for(i=0;i<tam;i++)
+ {
+	 printf("%d",ordened[i]);
+ }
+ printf(">\n");*/
+
+	if(visited[noCorr->verticeId-1]==0) //Se não visitado
+	{	//printf("visiting %d\n",noCorr->verticeId);
+		visited[noCorr->verticeId-1]=1; //Esse -1 é para que o último nóexista também
 		for(i=0;i<tam;i++)
 		{
 			if(ordened[i]==0)
@@ -804,9 +817,8 @@ static void visit(GRA_noGrafo noCorr,int* visited,int tam,int* ordened)
 			}
 		}
 		l=noCorr->listaArestas;
-		if(!l)
-			return;
-		if(LIS_IrInicioLista(l)!=LIS_CondRetListaVazia)
+		
+		if(l&&LIS_IrInicioLista(l)!=LIS_CondRetListaVazia)
 		{
 			
 			do
