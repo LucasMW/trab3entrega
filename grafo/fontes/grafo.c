@@ -89,7 +89,7 @@
    /***** Protótipos das funções encapuladas no módulo *****/
 
    static int IdExisteJa( GRA_tppGrafo grafo, int id );
-
+   static void visit(GRA_noGrafo noCorr,int* visited,int tam,int* ordened);
 /*****  Código das funções exportadas pelo módulo  *****/
 
 
@@ -646,9 +646,108 @@ GRA_tpCondRet GRA_ObterValorNoCorrente(GRA_tppGrafo grafo, void** endVar)
 }
 /* Fim função: GRA  &Obter valor No Corrente */
 
+
+/***************************************************************************
+*
+*  Função: GRA &DFS
+*  ****/
+
+GRA_tpCondRet GRA_DFS(GRA_tppGrafo grafo, int** refPtrIds, int * tam,int noId)
+{
+/* vá em cada vértice e imprima suas componentes conexas */
+	GRA_noGrafo p; //percorredor
+	GRA_tpAresta acs; //percorredor
+	LIS_tppLista l; //percorredor
+	LIS_tppLista visitados;
+	int i,j,size; //counter
+	static int *visited;
+	static int* ordened;
+	int * nosIds;
+	if(LIS_IrInicioLista(grafo->pVertices)==LIS_CondRetListaVazia)
+		return GRA_CondRetGrafoVazio;
+ 
+	if(LIS_CriarLista(&visitados,free)!=LIS_CondRetOK) /* Lista de Operação. A serem Visitados */
+		return GRA_CondRetFaltouMemoria;
+	LIS_IrInicioLista(grafo->pVertices);
+	i=0;
+	do
+	{
+		p=(GRA_noGrafo)LIS_ObterValor(grafo->pVertices);
+		if(p->verticeId>i)
+		i=p->verticeId;
+	}
+	/* vector position represents id*/
+	while(LIS_AvancarElementoCorrente(grafo->pVertices,1)!=LIS_CondRetFimLista);
+	
+	visited=(int*)malloc(sizeof(int)*i);
+	nosIds=(int*)malloc(sizeof(int)*i);
+	ordened=(int*)malloc(sizeof(int)*i);
+	size=i;
+	for(i=0;i<size;i++)
+		visited[i]=0; //Unmark ALL
+	for(i=0;i<size;i++)
+		ordened[i]=0; //Unmark ALL
+	LIS_IrInicioLista(grafo->pVertices);
+ 
+	do
+	{
+		p=(GRA_noGrafo)LIS_ObterValor(grafo->pVertices);
+		if(p->verticeId==noId)
+			break; //Found
+	}
+
+	while(LIS_AvancarElementoCorrente(grafo->pVertices,1)!=LIS_CondRetFimLista);
+	
+	visit(p,visited,size,ordened);
+	for(i=0,j=0;i<size;i++)
+	{
+		if(visited[i]==1)
+			j++; //Contar os Visitados
+ 
+	}
+	*refPtrIds=(int*)malloc(sizeof(int)*j);
+	*tam=j;
+	for(i=0,j=0;i<size;i++)
+	{
+		if(ordened[i]!=0)
+		{
+			*(*refPtrIds+j)=ordened[i]; // Receber em cada posição do vetor o id do nó visitado.
+			j++;
+		}
+	}
+	free(ordened);
+	free(visited);
+	return GRA_CondRetOK;
+}
+/* Fim função: GRA  &DFS */
+
+GRA_tpCondRet GRA_ExisteCaminho(GRA_tppGrafo grafo, int noInicioId, int noFimId)
+{
+	int* ptrIds;
+	int tam;
+	int i;
+	GRA_tpCondRet ret;
+	ret=GRA_DFS(grafo,&ptrIds,&tam,noInicioId);
+	if(ret!=GRA_CondRetOK)
+		return ret;
+	printf("\n< ");
+	for(i=0;i<tam;i++)
+	{	printf("%d; ",ptrIds[i]);
+		if(ptrIds[i]==noFimId)
+			return GRA_CondRetCaminhoExiste;
+	}
+	printf(">");
+	return GRA_CondRetCaminhoNaoExiste;
+	
+}
+
+
+
 /***************************************************************************
 
 *****  Código das funções encapsuladas no módulo  *****/
+
+
 
 
 /***********************************************************************
@@ -677,5 +776,51 @@ static int IdExisteJa(GRA_tppGrafo grafo,int id)
 	}
 	return 0; //NAO EXISTE
 }
-
-
+/***********************************************************************
+*
+*  $FC Função: GRA  -Visit
+*  $ED Descrição da função
+*     Função recursiva que percorre as arestas de cada nó
+*	  Usada pela DFS.
+*	  Ela retorna a ordem dos índices dos vértices visitados
+*
+***********************************************************************/
+static void visit(GRA_noGrafo noCorr,int* visited,int tam,int* ordened)
+{
+	int i;
+	
+	GRA_noGrafo p; //percorredor
+	GRA_tpAresta acs; //percorredor
+	LIS_tppLista l; //percorredor
+		
+	if(visited[noCorr->verticeId]==0) //Se não visitado
+	{
+		visited[noCorr->verticeId]=1;
+		for(i=0;i<tam;i++)
+		{
+			if(ordened[i]==0)
+			{	ordened[i]=noCorr->verticeId;
+				break;
+			}
+		}
+		l=noCorr->listaArestas;
+		if(!l)
+			return;
+		if(LIS_IrInicioLista(l)!=LIS_CondRetListaVazia)
+		{
+			
+			do
+			{
+				
+				acs=(GRA_tpAresta)LIS_ObterValor(l);
+				p=acs->noApontado;
+				
+				visit(p,visited,tam,ordened); //visite cada nó adjacente a esse
+				
+			}
+			while(LIS_AvancarElementoCorrente(l,1)!=LIS_CondRetFimLista);
+		}
+	 
+	}
+	return;
+}

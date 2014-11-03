@@ -7,7 +7,7 @@
 *
 * Nome da base de software: Arcabouço para a automação de testes de programas redigidos em C
 *
-* Projeto: INF 1301 Trabalho 2
+* Projeto: INF 1301 Trabalho 3
 * Gestor: LES/DI/PUC-Rio
 * Autores:  Lucas Menezes <LM>, Lorenzo Saraiva <LS>
 *
@@ -68,9 +68,12 @@ typedef enum {
 	       /* O nó não existe */
 		 GRA_CondRetArestaNaoExiste,
 	       /* A aresta já existe */
-   		GRA_CondRetJaEsta
+   		GRA_CondRetJaEsta,
 			/* Já está no nó */
-
+		GRA_CondRetCaminhoExiste,
+			/* Há caminho entre dois vértices */
+		GRA_CondRetCaminhoNaoExiste
+			/* Não há caminho entre os dois vértices */
    } GRA_tpCondRet ;
 /***********************************************************************
 *
@@ -386,3 +389,48 @@ GRA_tpCondRet GRA_ObterValorNo(GRA_tppGrafo grafo, int noId,void** endVar);
 *
 ***********************************************************************/
 GRA_tpCondRet GRA_IrParaNo(GRA_tppGrafo grafo,int noId);
+
+/***********************************************************************
+*
+* $FC Função: GRA &DFS
+*
+* $ED Descrição da função
+*	Esta função retorna o um vetor de ids de nós de grafo
+*	que são o todos os que são posíveis se chegar pelo no recebido.
+* $EP Parâmetros
+*	grafo - ponteiro para a cabeça do grafo a ser impresso
+*	noId - inteiro para o Id do nó que virará corrente
+*	refPtrIds - Endereço do vetor que recebrá os ids
+*	refTam - Endereço de um inteiro que receberá o tamanho do vetor
+* $FV Valor retornado
+*	Se executou corretamente retornará GRA_CondRetOK.
+*	Se o grafo for vazio retornará GRA_CondRetGrafoVazio.
+*	Se o nó não existir retornará GRA_CondRetNoNaoExiste.
+*
+*
+***********************************************************************/
+ 
+GRA_tpCondRet GRA_DFS(GRA_tppGrafo grafo, int** refPtrIds, int * reftam,int noId);
+
+/***********************************************************************
+*
+* $FC Função: GRA &ExisteCaminho
+*
+* $ED Descrição da função
+*	Esta função verifica se existe caminho entre dois vértices
+*	cujos ids são informados, de um determinado grafo.
+*	
+* $EP Parâmetros
+*	grafo - ponteiro para a cabeça do grafo a ser impresso
+*	noInicioId - Id do vértice pelo qual se começa
+*	noFimId - Id do vértice ao qual se chega
+* $FV Valor retornado
+*	Se o caminho for encontrado retornará GRA_CondRetCaminhoExiste
+*	Se o caminho não for encontrado retornará GRA_CondRetCaminhoNaoExiste
+*	Se o grafo for vazio retornará GRA_CondRetGrafoVazio.
+*	Se o vértice inicial não existir retornará GRA_CondRetNoNaoExiste.
+*
+*
+***********************************************************************/
+ 
+GRA_tpCondRet GRA_ExisteCaminho(GRA_tppGrafo grafo, int noInicioId, int noFimId);

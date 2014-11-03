@@ -14,6 +14,7 @@
 *  $HA Histórico de evolução:
 *     Versão  Autor    Data     Observações
 *     1       LM,LS  22/SET/2014 início desenvolvimento
+*	  2		  LM,LS 23/OUT/2014 início da melhoria do módulo
 *
 ***************************************************************************/
 
@@ -44,8 +45,8 @@ static const char OBTER_VALOR_CORR_CMD	  [ ] = "=obtervalorcorr" ;
 static const char IR_VIZINHO_CMD          [ ] = "=irvizinho"      ;
 static const char EXC_CORR_CMD		  [ ] = "=excluircorr"	  ;
 static const char IR_PARA_CMD		  [ ] = "=irpara"	  ;
-
-
+static const char DFS_CMD		  [ ] = "=dfs"	  ;
+static const char EXISTE_CAMINHO_CMD		  [ ] = "=existecaminho"	  ;
 #define TRUE  1
 #define FALSE 0
 
@@ -87,10 +88,10 @@ GRA_tppGrafo   VTGRAFO[ DIM_VT_GRAFO ] ;
 *	  =excluircorr					inxGrafo  CondRetEsp
 *     =obteridcorr                  inxGrafo  ValorEsp CondRetEsp
 *     =obtervalorcorr               inxGrafo  StringEsp  ConRetEsp
-*     =obteridcorr                  inxGrafo  idEsp CondRetEs
-*	  
-*
-***********************************************************************/
+*     =obteridcorr                  inxGrafo  idEsp CondRetEsp
+*	  =dfs							inxGrafo  idIni CondRetEsp
+*	  =existecaminho				inxGrafo  idIni	idFim	CondRetEsp
+************************************************************************/
 
    TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
    {
@@ -116,6 +117,7 @@ GRA_tppGrafo   VTGRAFO[ DIM_VT_GRAFO ] ;
 	  int* intpointer;
       int numElem = -1 ;
 	  int valorAresta;
+	  int noIni;
       StringDado[ 0 ] = 0 ;
 
       /* Efetuar reset de teste de grafo */
@@ -448,17 +450,42 @@ GRA_tppGrafo   VTGRAFO[ DIM_VT_GRAFO ] ;
             } 
 			    return TST_CompararInt( CondRetEsp, CondRet, "Condição de retorno errada no IrNoVizinho");
 		 }
+		 else if (strcmp( ComandoTeste ,  DFS_CMD) == 0)
+		 {
+			 numLidos = LER_LerParametros( "iii",&inxGrafo, &noIni, &CondRetEsp) ;
+			  if ( ( numLidos != 3 )|| ( ! ValidarInxGrafo( inxGrafo , NAO_VAZIO )) )
+            {
+               return TST_CondRetParm ;
+            } /* if */
+			  CondRet =(TST_tpCondRet) GRA_DFS( VTGRAFO[ inxGrafo ],&intpointer,&i,noIni) ;
+			   if ( CondRet != CondRetEsp )
+            {
+              printf("\nA CondRet foi %d\n %d %d",CondRet,i,j);
+            } 
+			    return TST_CompararInt( CondRetEsp, CondRet, "Condição de retorno errada na DFS");
+		 }
+		  else if (strcmp( ComandoTeste ,  EXISTE_CAMINHO_CMD) == 0)
+		 {
+			 numLidos = LER_LerParametros( "iiii",&inxGrafo, &i,&j, &CondRetEsp) ;
+			  if ( ( numLidos != 4 )|| ( ! ValidarInxGrafo( inxGrafo , NAO_VAZIO )) )
+            {
+               return TST_CondRetParm ;
+            } /* if */
+			  CondRet =(TST_tpCondRet) GRA_ExisteCaminho( VTGRAFO[ inxGrafo ],i,j) ;
+			 
+			    return TST_CompararInt( CondRetEsp, CondRet, "Condição de retorno errada na DFS");
+		 }
       return TST_CondRetNaoConhec ;
 
-   } /* Fim fun��o: TGRA &Testar grafo */
+   } /* Fim função: TGRA &Testar grafo */
 
 
-/*****  C�digo das fun��es encapsuladas no m�dulo  *****/
+/*****  Código das funções encapsuladas no módulo  *****/
 
 
 /***********************************************************************
 *
-*  $FC Fun��o: TGRA -Destruir valor
+*  $FC Função: TGRA -Destruir valor
 *
 ***********************************************************************/
 
