@@ -11,4 +11,4 @@
 02/OUT/2014; 2h; Codificar Módulo; Codifiquei funções
 02/OUT/2014; 2h; Redigir script de teste; Redigi um script pra testar as novas funções
 02/OUT/2014; 2h; Realizar testes; Realizei um teste e diagnostiquei problemas
-06/OUT/2014; 4h; Revisar módulo; Revisei documentação e assertivas.
+06/OUT/2014; 6h; Revisar módulo; Revisei documentação e assertivas.
