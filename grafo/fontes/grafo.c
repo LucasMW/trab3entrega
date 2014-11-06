@@ -65,6 +65,8 @@
 		   /* ponteiro para a Informação armazenada no vértice */
 	   LIS_tppLista listaArestas;
 			/* Ponteiro para a Lista de Adjacências de cada vértice */
+	   char marked;
+			/* Está marcado? 0 para não, 1 para sim */
    };
    typedef struct GRA_verticeGrafo* GRA_noGrafo;
 
@@ -183,7 +185,7 @@ GRA_tpCondRet   GRA_InserirNo ( GRA_tppGrafo grafo, void * pInfo, int * pNoId)
 
 /***************************************************************************
 *
-*  Função: GRA &Remover No
+*  Função: GRA &Excluir No
 *  ****/
 
 GRA_tpCondRet   GRA_ExcluirNo ( GRA_tppGrafo grafo, int Id)
@@ -216,11 +218,11 @@ GRA_tpCondRet   GRA_ExcluirNo ( GRA_tppGrafo grafo, int Id)
 	return GRA_CondRetOK;
 }
 
-/* Fim função: GRA  &Remover No */
+/* Fim função: GRA  &Excluir No */
 
 /***************************************************************************
 *
-*  Função: GRA &Remover No Corrente
+*  Função: GRA &Excluir No Corrente
 *  ****/
 
 GRA_tpCondRet   GRA_ExcluirNoCorrente ( GRA_tppGrafo grafo )
@@ -228,7 +230,7 @@ GRA_tpCondRet   GRA_ExcluirNoCorrente ( GRA_tppGrafo grafo )
 	return (GRA_ExcluirNo(grafo, grafo->idCorrente));
 }
 
-/* Fim função: GRA  &Remover No Corrente */
+/* Fim função: GRA  &Excluir No Corrente */
 
 /***************************************************************************
 *
@@ -240,8 +242,7 @@ GRA_tpCondRet  GRA_InserirAresta( GRA_tppGrafo grafo, int node_i, int node_j, in
 	int i = 0, j = 0;
 	GRA_noGrafo  noOrigem, noDestino;
 	GRA_tpAresta aresta1, aresta2, noTemp;
-	aresta1= (GRA_tpAresta)malloc(sizeof(struct GRA_arestaGrafo));
-	aresta2= (GRA_tpAresta)malloc(sizeof(struct GRA_arestaGrafo));
+	
 	
 	if(LIS_IrInicioLista(grafo->pVertices)==LIS_CondRetListaVazia)
 		return GRA_CondRetGrafoVazio;
@@ -253,7 +254,10 @@ GRA_tpCondRet  GRA_InserirAresta( GRA_tppGrafo grafo, int node_i, int node_j, in
 	if  (!IdExisteJa(grafo, node_i))
 		return GRA_CondRetNoNaoExiste;
 		/* if */
-
+	aresta1= (GRA_tpAresta)malloc(sizeof(struct GRA_arestaGrafo));
+	aresta2= (GRA_tpAresta)malloc(sizeof(struct GRA_arestaGrafo));
+	if((aresta1==NULL)|(aresta2==NULL))
+		return GRA_CondRetFaltouMemoria;
 	LIS_IrInicioLista(grafo->pVertices);	
 	
 	do{
@@ -727,9 +731,11 @@ GRA_tpCondRet GRA_ExisteCaminho(GRA_tppGrafo grafo, int noInicioId, int noFimId)
 	int tam;
 	int i;
 	GRA_tpCondRet ret;
+	printf("Looking for Caminho entre %d e %d\n",noInicioId,noFimId);
 	ret=GRA_DFS(grafo,&ptrIds,&tam,noInicioId);
 	if(ret!=GRA_CondRetOK)
 		return ret;
+	
 	//printf("\n< ");
 	for(i=0;i<tam;i++)
 	{	//printf("%d; ",ptrIds[i]);
@@ -740,6 +746,109 @@ GRA_tpCondRet GRA_ExisteCaminho(GRA_tppGrafo grafo, int noInicioId, int noFimId)
 	return GRA_CondRetCaminhoNaoExiste;
 	
 }
+
+
+GRA_tpCondRet GRA_BFS(GRA_tppGrafo grafo, int** refPtrIds, int * tam,int noId)
+{
+/* vá em cada vértice e imprima suas componentes conexas */
+	GRA_noGrafo p; //percorredor
+	GRA_tpAresta acs; //percorredor
+	LIS_tppLista l; //percorredor
+	LIS_tppLista fila;
+	int i,j,size; //counter
+	static int *visited;
+	static int* ordened;
+	int * nosIds;
+	if(LIS_IrInicioLista(grafo->pVertices)==LIS_CondRetListaVazia)
+		return GRA_CondRetGrafoVazio;
+ 
+	if(LIS_CriarLista(&fila,free)!=LIS_CondRetOK) /* Lista de Operação. A serem Visitados */
+		return GRA_CondRetFaltouMemoria;
+	LIS_IrInicioLista(grafo->pVertices);
+	i=0;
+	do
+	{
+		p=(GRA_noGrafo)LIS_ObterValor(grafo->pVertices);
+		if(p->verticeId>i)
+		i=p->verticeId;
+	}
+	/* vector position represents id*/
+	while(LIS_AvancarElementoCorrente(grafo->pVertices,1)!=LIS_CondRetFimLista);
+	
+	visited=(int*)malloc(sizeof(int)*i);
+	nosIds=(int*)malloc(sizeof(int)*i);
+	ordened=(int*)malloc(sizeof(int)*i);
+	size=i;
+	for(i=0;i<size;i++)
+		visited[i]=0; //Unmark ALL
+	for(i=0;i<size;i++)
+		ordened[i]=0; //Unmark ALL
+	
+	LIS_IrInicioLista(grafo->pVertices);
+	do
+	{
+	
+		p=(GRA_noGrafo)LIS_ObterValor(grafo->pVertices);
+		p->marked=0; //Unmark All
+	}
+	while(LIS_AvancarElementoCorrente(grafo->pVertices,1)!=LIS_CondRetFimLista);
+	/* Algoritmo BFS */
+
+	GRA_IrParaNo(grafo,noId);
+	GRA_ObterValorNoCorrente(grafo,(void**)&p);
+	p->marked;
+	LIS_InserirElementoApos(fila,p);
+	while(LIS_IrInicioLista(fila)!=LIS_CondRetListaVazia)
+	{
+		p=(GRA_noGrafo)LIS_ObterValor(fila);
+		LIS_IrInicioLista(p->listaArestas);
+		do 
+		{
+			acs=(GRA_tpAresta)LIS_ObterValor(p->listaArestas);
+			if(acs->noApontado->marked=0) // Se Não está marcado?
+			{
+				/* visite ele */
+
+				acs->noApontado->marked=1; //visitei
+				LIS_InserirElementoApos(fila,acs->noApontado);
+
+			}
+			else 
+			{
+				if(LIS_ProcurarValor(fila,acs->noApontado)==LIS_CondRetOK)
+				{				/* visite ele */
+
+				}
+			}
+			
+		}
+		while(LIS_AvancarElementoCorrente(p->listaArestas,1));
+		LIS_ProcurarValor(fila,p);
+		LIS_ExcluirElemento(fila); /* Exclui p */
+	}
+	
+	visit(p,visited,size,ordened);
+	for(i=0,j=0;i<size;i++)
+	{
+		if(visited[i]==1)
+			j++; //Contar os Visitados
+ 
+	}
+	*refPtrIds=(int*)malloc(sizeof(int)*j);
+	*tam=j;
+	for(i=0,j=0;i<size;i++)
+	{
+		if(ordened[i]!=0)
+		{
+			*(*refPtrIds+j)=ordened[i]; // Receber em cada posição do vetor o id do nó visitado.
+			j++;
+		}
+	}
+	free(ordened);
+	free(visited);
+	return GRA_CondRetOK;
+}
+/* Fim função: GRA  &BFS */
 
 
 
@@ -792,7 +901,7 @@ static void visit(GRA_noGrafo noCorr,int* visited,int tam,int* ordened)
 	GRA_noGrafo p; //percorredor
 	GRA_tpAresta acs; //percorredor
 	LIS_tppLista l; //percorredor
-		 /*printf("Iteration\n");
+		 printf("Iteration\n");
  printf("Visited <");
  for(i=0;i<tam;i++)
  {
@@ -804,18 +913,11 @@ static void visit(GRA_noGrafo noCorr,int* visited,int tam,int* ordened)
  {
 	 printf("%d",ordened[i]);
  }
- printf(">\n");*/
+ printf(">\n");
 
 	if(visited[noCorr->verticeId-1]==0) //Se não visitado
-	{	//printf("visiting %d\n",noCorr->verticeId);
-		visited[noCorr->verticeId-1]=1; //Esse -1 é para que o último nóexista também
-		for(i=0;i<tam;i++)
-		{
-			if(ordened[i]==0)
-			{	ordened[i]=noCorr->verticeId;
-				break;
-			}
-		}
+	{	printf("visiting %d\n",noCorr->verticeId);
+		
 		l=noCorr->listaArestas;
 		
 		if(l&&LIS_IrInicioLista(l)!=LIS_CondRetListaVazia)
@@ -832,7 +934,14 @@ static void visit(GRA_noGrafo noCorr,int* visited,int tam,int* ordened)
 			}
 			while(LIS_AvancarElementoCorrente(l,1)!=LIS_CondRetFimLista);
 		}
-	 
+	 visited[noCorr->verticeId-1]=1; //Esse -1 é para que o último nóexista também
+		for(i=0;i<tam;i++)
+		{
+			if(ordened[i]==0)
+			{	ordened[i]=noCorr->verticeId;
+				break;
+			}
+		}
 	}
 	return;
 }

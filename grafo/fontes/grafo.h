@@ -91,11 +91,26 @@ typedef enum {
 *                     a ser excluído.
 *                     Ver descrição do módulo.
 *
+*  $EAE Assertivas de entrada
+*	  refGrafo deve ser o endereço de uma variável do tipo 
+*	  GRA_tppGrafo alocada pelo bloco usuário da função. 
+*	  refGrafo deve ser, portanto, um ponteiro não nulo
+*	  ExcluirValor é um ponteiro para uma função que tem a como objetivo excluir os
+*	  valores que serão usados nos vértices do grafo
+*
 *  $FV Valor retornado
 *     Se executou corretamente retornará a GRA_CondRetOK
 *     Se ocorreu alguma alocação de memória não conseguir ser realizada
 *     a função retornará GRA_CondRetFaltouMemoria.
-*    
+*  
+*  $EAS Assertivas de saída
+*	  Se a função operar corretamente, retornará GRA_CondRetOK
+*	  e o valor da variável GRA_tppGrafo cujo endereço foi passado 
+*	  à função receberá o Grafo criado
+*	  Se ocorreu alguma alocação de memória não conseguir ser realizada
+*	  A função retornará GRA_CondRetFaltouMemória e o valor de refGrafo
+*	  não será modificado  
+*
 *
 ***********************************************************************/
 GRA_tpCondRet GRA_CriarGrafo( GRA_tppGrafo* refgrafo,  void   ( * ExcluirValor ) ( void * pDado ));
@@ -110,9 +125,25 @@ GRA_tpCondRet GRA_CriarGrafo( GRA_tppGrafo* refgrafo,  void   ( * ExcluirValor )
 *  $EP Parâmetros
 *	  grafo			- ponteiro para a cabeça do grafo a ser destruido
 *
+* $EAE Assertivas de entrada
+*	  grafo deve ser uma variável do tipo GRA_tppGrafo alocada pelo trecho
+*	  usuário da função. 
+*	  grafo deve conter um grafo gerado por esse módulo, i.e.
+*	  pela função GRA_CriarGrafo;
+*	  grafo deve ser, portanto, um ponteiro não nulo.
+*
 *  $FV Valor retornado
 *     Se executou corretamente retorna retornará a GRA_CondRetOK
 *    
+*
+* $EAE Assertivas de saída
+*	
+*	Se a função operar corretamente o retorno será GRA_CondRetOK
+*	e o valor da vaiável GRA_tppGrafo passada continuará o mesmo,
+*	porém, o grafo foi liberado da memória e não pode mais ser acessado
+*	cabe ao trecho usuário da função atribuir null à variável após
+*	o uso da função
+*	
 *    
 *
 ***********************************************************************/
@@ -128,13 +159,37 @@ GRA_tpCondRet GRA_DestruirGrafo( GRA_tppGrafo grafo );
 *     A função trata de inserir um novo nó no grafo, dando a ele um id único, pelo qual poderá ser 
 *     identificado e operado posteriormente. Também o associará a uma informação qualquer, passada
 *	  pelo parâmetro pInfo. Por definição um novo nó não tem arestas.
+*	
 *  $EP Parâmetros
 *	  grafo			- ponteiro para a cabeça do grafo 
 *	  pInfo			- endereço a informação a ser armazenada no grafo
 *	  pNoId			- endereço da variável que receberá o id do grafo criado, retornado por referência
+*
+*	$EAE Assertivas de entrada
+*	  grafo deve ser uma variável GRA_tppGrafo alocado pelo trecho de código usuário da função
+*     grafo deve ser, portanto, ponteiro não nulo. 
+*	  grafo deve ser um grafo já alocado pela função GRA_CriarGrafo;
+*	  pInfo deve ser o endereço da informação, esta alocada pelo código usuário, que se quer
+*	  adicionar em cada nó do grafo. 
+*	  pInfo não pode ser nulo
+*	  o tipo de pInfo deve ser o mesmo para todas as chamadas de GRA_InserirNo para um mesmo grafo
+*	  pNoId deve ser um endereço de um inteiro alocado pelo código usuário
+*	  pNoId não pode ser nulo.
+*
 *  $FV Valor retornado
 *     Se executou corretamente retornará GRA_CondRetOK
 *     Se Faltou memória em qualquer parte do processo, retornará GRA_CondRetFaltouMemoria
+*
+*  $EAE Assertivas de saída
+*	Se a função executou corretamente retornará GRA_CondRetOK e
+*	  o nó foi gerado, a informação associada a ele por pInfo está 
+*	  corretamente colocada, e a variável cujo endereço foi passado no
+*	  parâmetro pNoId recebeu o valor inteiro de identificação daquele nó
+*	  recém criado, pelo qual o nó poderá ser acessado pelas funções de acesso
+*	  e o nó corrente do grafo passou a ser o o nó gerado.
+*	Se faltou memória em qualquer parte do processo, retornará GRA_CondRetFaltouMemoria e
+*	  o no corrente do grafo continuará no estado anterior à chamada da função,
+*	  o nó não é adicionado no grafo, e os parâmetros passados não sofrem alteração.
 *
 *     
 ***********************************************************************/
@@ -146,17 +201,31 @@ GRA_tpCondRet   GRA_InserirNo ( GRA_tppGrafo grafo, void * pInfo,int* pNoId);
 *
 *  $ED Descrição da função
 *     A função recebe um grafo o id do nó a ser excluído do respectivo grafo.
-*     Se o Nó a ser removido é o nó corrente, o nó corrente passa ser outro qualquer
-*	  
+*     o nó corrente passa a ser outro qualquer 
 *  $EP Parâmetros
 *	  grafo			- ponteiro para a cabeça do grafo
 *	  Id			- id do no a ser excluido
+*  $EAE Assertivas de entrada
+*	  grafo deve ser uma variável GRA_tppGrafo alocado pelo trecho de código usuário da função
+*     grafo deve ser, portanto, ponteiro não nulo. 
+*	  grafo deve ser um grafo já alocado pela função GRA_CriarGrafo;
+*	  Id deve ser um valor inteiro de identificação de um nó que exista no grafo
 *  $FV Valor retornado
 *     Se executou corretamente retornará GRA_CondRetOK
 *     Se o no nao existir retornará GRA_CondRetNoNaoExiste
 *	  Se o grafo estiver vazio retornará GRA_CondRetGrafoVazio
 *
-*     
+*  $EAS Assertivas de saída
+*	Se executou corretamente retornará GRA_CondRetOK e
+*     o nó foi excluído corretamente, seu id não acessa nenhum nó.
+*	  Se o grafo, após a exclusão, tiver ficado vazio, o nó corrente
+*	   assumirá o estado nulo( não há corrente)
+*	  caso contrário,
+*	   o nó corrente será outro qualquer determinado arbitrariamente
+*	Se o no nao existir retornará GRA_CondRetNoNaoExiste e
+*	  o estado do grafo permanece o mesmo, o grafo não é modificado.
+*	Se o grafo estiver vazio retornará GRA_CondRetGrafoVazio e
+*	  o estado do grafo permanece o mesmo, o grafo não é modificado.
 ***********************************************************************/
 
 GRA_tpCondRet   GRA_ExcluirNo ( GRA_tppGrafo grafo, int Id);
@@ -170,10 +239,26 @@ GRA_tpCondRet   GRA_ExcluirNo ( GRA_tppGrafo grafo, int Id);
 *		O no corrente passa a ser outro qualquer.
 *  $EP Parâmetros
 *	  grafo			- ponteiro para a cabeça do grafo
+*	$EAE Assertivas de entrada
+*	  grafo deve ser uma variável GRA_tppGrafo alocado pelo trecho de código usuário da função
+*     grafo deve ser, portanto, ponteiro não nulo. 
+*	  grafo deve ser um grafo já alocado pela função GRA_CriarGrafo;
+*	  o grafo deve ser não vazio
+*	  o grafo deve ter um nó corrente
 *  $FV Valor retornado
 *     Se executou corretamente retornará GRA_CondRetOK
 *	  Se o grafo estiver vazio retornará GRA_CondRetGrafoVazio
-*
+*  $EAS Assertivas de saída
+*	Se executou corretamente retornará GRA_CondRetOK e
+*     o nó foi excluído corretamente, o id do nó corrente não acessa nenhum nó.
+*	  Se o grafo, após a exclusão, tiver ficado vazio, o nó corrente
+*	   assumirá o estado nulo( não há corrente)
+*	  caso contrário,
+*	   o nó corrente será outro qualquer determinado arbitrariamente
+*	Se o no corrente nao existir retornará GRA_CondRetNoNaoExiste e
+*	  o estado do grafo permanece o mesmo, o grafo não é modificado.
+*	Se o grafo estiver vazio retornará GRA_CondRetGrafoVazio e
+*	  o estado do grafo permanece o mesmo, o grafo não é modificado.
 *     
 ***********************************************************************/
 
@@ -193,12 +278,33 @@ GRA_tpCondRet   GRA_ExcluirNoCorrente ( GRA_tppGrafo grafo);
 *	  no_y_Id		- ID do outro vértice onde será colocada a aresta
 *	  idAresta		- Inteiro a ser adicionado à aresta 
 *
+*  $EAE Assertivas de entrada
+*	  grafo deve ser uma variável GRA_tppGrafo alocado pelo trecho de código usuário da função
+*     grafo deve ser, portanto, ponteiro não nulo. 
+*	  grafo deve ser um grafo já alocado pela função GRA_CriarGrafo;
+*	  o grafo deve ser não vazio
+*     no_x_Id e no_y_Id devem ambos serem  identificadores de vértices válidos, i.e,
+*	  pertencentes ao grafo.
+*     idAresta deve ser um inteiro qualquer, que será adicionado à aresta.
 *  $FV Valor retornado
 *     Se executou corretamente retorna GRA_CondRetOK
 *	  Se um dos nós nao existe, retorna GRA_CondRetNoNaoExiste
 *	  Se a aresta já existe, retorna GRA_CondRetArestaJaExiste
 *	  Se o grafo estiver vazio retornará GRA_CondRetGrafoVazio
-*    
+*	  Se faltou memória para as arestas, retorna GRA_CondRetFaltouMemoria 
+* $EAE Assertivas de saída
+*	Se executou corretamente retorna GRA_CondRetOK e
+*	  o grafo terá uma nova aresta entre os dois vértices indicados
+*	  por no_x_Id e no_y_Id cujo valor foi é o recebido no parâmetro
+*	  idAresta.
+*	Se um dos nós nao existe, retorna GRA_CondRetNoNaoExiste e
+*     o grafo não é modificado.
+*   Se a aresta já existe, retorna GRA_CondRetArestaJaExiste e
+*     o grafo não é modificado
+*	Se o grafo estiver vazio retorna GRA_CondRetGrafoVazio
+*	  o grafo não é modificado
+*	Se faltou memória para as arestas, retorna GRA_CondRetFaltouMemoria e
+*     o grafo não é modificado   
 *
 ***********************************************************************/
 
@@ -434,3 +540,24 @@ GRA_tpCondRet GRA_DFS(GRA_tppGrafo grafo, int** refPtrIds, int * reftam,int noId
 ***********************************************************************/
  
 GRA_tpCondRet GRA_ExisteCaminho(GRA_tppGrafo grafo, int noInicioId, int noFimId);
+
+
+/***********************************************************************
+*
+* $FC Função: GRA &ObterVértices
+*
+* $ED Descrição da função
+*	Esta função retorna um vetor com todos os ids dos vértices 
+*	contidos no grafo no momento de sua execução
+*	
+* $EP Parâmetros
+*	grafo - ponteiro para a cabeça do grafo a ser impresso
+*	refPtrIds - endereço do ponteiro que receberá o vetor de ids
+*	tam - endereço do inteiro que receberá o tamanho do vetor
+* $FV Valor retornado
+*	Se o procedimento for bem sucedido, retornará GRA_CondRetOK
+*	Se o grafo for vazio retornará GRA_CondRetGrafoVazio.
+*
+*
+***********************************************************************/
+GRA_tpCondRet GRA_ObterVertices(GRA_tppGrafo grafo,int* refPtrIds,int *tam);
