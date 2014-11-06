@@ -256,7 +256,7 @@ GRA_tpCondRet  GRA_InserirAresta( GRA_tppGrafo grafo, int node_i, int node_j, in
 		/* if */
 	aresta1= (GRA_tpAresta)malloc(sizeof(struct GRA_arestaGrafo));
 	aresta2= (GRA_tpAresta)malloc(sizeof(struct GRA_arestaGrafo));
-	if((aresta1==NULL)|(aresta2==NULL))
+	if((aresta1==NULL)|(aresta2==NULL)) // Checa se faltou memória pra alguma delas 
 		return GRA_CondRetFaltouMemoria;
 	LIS_IrInicioLista(grafo->pVertices);	
 	
