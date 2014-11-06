@@ -498,15 +498,29 @@ GRA_tpCondRet GRA_ObterValorNoCorrente(GRA_tppGrafo grafo, void ** pInfo);
 *
 * $ED Descrição da função
 * 	Esta Função recebe um grafo e retorna por ref o Id 
-	do nó corrente, pelo qual ele poderá ser acessado e operado.
+*	do nó corrente, pelo qual ele poderá ser acessado e operado.
+*
 * $EP Parâmetros
 * 	grafo - ponteiro para a cabeça do grafo a ser impresso
 * 	refId - o endereço da variável que receberá o valor do id do nó
+* $EAE Assertivas de entrada
+*	grafo deve ser uma variável GRA_tppGrafo alocado pelo código usuário da função
+*   grafo deve ser, portanto, ponteiro não nulo. 
+*	grafo deve ser um grafo já alocado pela função GRA_CriarGrafo;
+*	o grafo não pode ser vazio
+*	o grafo precisa ter um nó corrente
+*	refId deve ser um endereço de uma variável alocada pelo código usuário.
+*	Não pode, portanto, ser ponteiro nulo
 * $FV Valor retornado
 * 	Se executou corretamente retornará GRA_CondRetOK.
 * 	Se o grafo for vazio retornará GRA_CondRetGrafoVazio.
-	Se o nó não existir retornará GRA_CondRetNoNaoExiste..
 *
+* $EAS Assertivas de Saída
+*	Se executou corretamente retornará GRA_CondRetOK e
+*	  o valor da variável cujo endereço foi passado ao parâmetro
+*	  refId receberá o id do nó corrente do grafo
+*	Se o grafo for vazio retornará GRA_CondRetGrafoVazio e
+*	  o valor recebido por referência no parâmetro refId será 0.
 *
 ***********************************************************************/
 GRA_tpCondRet GRA_ObterNoCorrente( GRA_tppGrafo grafo, int * refId);
@@ -517,17 +531,37 @@ GRA_tpCondRet GRA_ObterNoCorrente( GRA_tppGrafo grafo, int * refId);
 *
 * $ED Descrição da função
 * 	Esta função recebe o iD do nó vizinho para onde se deseja mudar o nó corrente
-*
+*	A função verifica se o id informado é adjacente ao corrente e só muda se for. 
 * $EP Parâmetros
 * 	grafo - ponteiro para a cabeça do grafo a ser impresso
 * 	noVizinho - inteiro para o Id do nó que se deseja ir
-* 	
+* $EAE Assertivas de entrada
+*	grafo deve ser uma variável GRA_tppGrafo alocado pelo código usuário da função
+*   grafo deve ser, portanto, ponteiro não nulo. 
+*	grafo deve ser um grafo já alocado pela função GRA_CriarGrafo;
+*	o grafo não pode ser vazio
+*	o grafo precisa ter um nó corrente
+*	noId deve ser um inteiro cujo valor seja um id de um vértice
+*	adjacente ao vértice corrente do grafo
 * $FV Valor retornado
-* 	Se executou corretamente retornará GRA_CondRetOK.
-* 	Se o grafo for vazio retornará GRA_CondRetGrafoVazio.
-* 	Se o nó não existir retornará GRA_CondRetNoNaoExiste.
-*	Se não houver aresta entre os nós retornará GRA_CondRetArestaNaoExiste
-*   Se o nó desejado já for o corrente retornará GRA_CondRetJaEsta
+* 	Se executou corretamente retorna GRA_CondRetOK 
+*	Se o grafo for vazio retorna GRA_CondRetGrafoVazio.
+*	Se o nó não existir retorna GRA_CondRetNoNaoExiste.
+*	Se não houver aresta entre os nós retorna GRA_CondRetArestaNaoExiste.
+* $AES
+* 	Se executou corretamente retorna GRA_CondRetOK e
+*    o no corrente do grafo será o nó cujo o id foi recebido
+*	 pelo parâmetro id vizinho
+* 	Se o grafo for vazio retorna GRA_CondRetGrafoVazio.
+*	 O grafo não é modificado
+* 	Se o nó não existir retorna GRA_CondRetNoNaoExiste.
+*	 O nó corrente permanece no estado anterior.
+*	Se não houver aresta entre os nós retorna GRA_CondRetArestaNaoExiste.
+*	 Significa que o nó informado não é vizinho do corrente.
+*	 O nó corrente permanece no seu estado anterior
+*   Se o nó desejado já for o corrente retorna GRA_CondRetJaEsta
+*	 Significa que o id informado é o mesmo do corrente.
+*	 o nó corrente permanece no seu estado anterior
 *
 *
 ***********************************************************************/
@@ -544,12 +578,31 @@ GRA_tpCondRet GRA_IrNoVizinho( GRA_tppGrafo grafo, int noVizinho);
 * 	grafo - ponteiro para a cabeça do grafo a ser impresso
 * 	noId - inteiro para o Id do nó cujo valor será recebido
 * 	endVar - o endereço do ponteiro que receberá o nó
+* $EAE Assertivas de Entrada
+*	grafo deve ser uma variável GRA_tppGrafo alocado pelo código usuário da função
+*   grafo deve ser, portanto, ponteiro não nulo. 
+*	grafo deve ser um grafo já alocado pela função GRA_CriarGrafo;
+*	o grafo não pode ser vazio
+*	o grafo precisa ter um nó corrente
+*	noId precisa conter um Id válido, i.e., um id de um vértice
+*	contido no grafo.
+*	endVar precisa ser o endereço de um ponteiro que receberá a informação do nó
+*	o ponteiro cujo endereço é recebido por endVar deve ser do mesmo tipo  que a informação
+*	armazenada no grafo.
+*	endVar não poder ser ponteiro nulo
 * $FV Valor retornado
 * 	Se executou corretamente retornará GRA_CondRetOK.
 * 	Se o grafo for vazio retornará GRA_CondRetGrafoVazio.
 * 	Se o nó não existir retornará GRA_CondRetNoNaoExiste.
-*
-*
+* $EAS Assertivas de Saída
+*	Se executou corretamente retorna GRA_CondRetOK e
+*	  o ponteiro cujo o endereço foi passado ao parâmetro endVar
+*	  apontará para a informação associada ao nó cujo id foi informado
+*	  ao parâmetro noId
+*	Se o grafo for vazio retorna GRA_CondRetGrafoVazio e
+*	  o valor do ponteiro cujo endereço foi recebido não será modificado
+*	Se o nó não existir retornará GRA_CondRetNoNaoExiste e
+*	  o valor do ponteiro cujo endereço foi recebido não será modificado
 ***********************************************************************/
 GRA_tpCondRet GRA_ObterValorNo(GRA_tppGrafo grafo, int noId,void** endVar);
 
@@ -565,13 +618,28 @@ GRA_tpCondRet GRA_ObterValorNo(GRA_tppGrafo grafo, int noId,void** endVar);
 * $EP Parâmetros
 * 	grafo - ponteiro para a cabeça do grafo a ser impresso
 * 	noId - inteiro para o Id do nó que virará corrente
-* 	
+*
+* $EAE Assertivas de Entrada
+*	grafo deve ser uma variável GRA_tppGrafo alocado pelo código usuário da função
+*   grafo deve ser, portanto, ponteiro não nulo. 
+*	grafo deve ser um grafo já alocado pela função GRA_CriarGrafo;
+*	o grafo não pode ser vazio
+*	noId precisa conter um Id válido, i.e., um Id de um vértice
+*	contido no grafo.
+*	 	
 * $FV Valor retornado
 * 	Se executou corretamente retornará GRA_CondRetOK.
 * 	Se o grafo for vazio retornará GRA_CondRetGrafoVazio.
 * 	Se o nó não existir retornará GRA_CondRetNoNaoExiste.
 *
-*
+* $EAS Assertivas de Saída
+*	Se executou corretamente retorna GRA_CondRetOK e
+*	  o no corrente do grafo passa ser o no cujo id
+*	  foi passado ao parâmetro noId
+*	Se o grafo for vazio retorna GRA_CondRetGrafoVazio e
+*	  o no corrente do grafo permanece no seu estado anterior.
+*	Se o nó não existir retornará GRA_CondRetNoNaoExiste.
+*	  o no corrente do grafo permanece no seu estado anterior.
 ***********************************************************************/
 GRA_tpCondRet GRA_IrParaNo(GRA_tppGrafo grafo,int noId);
 
@@ -587,6 +655,7 @@ GRA_tpCondRet GRA_IrParaNo(GRA_tppGrafo grafo,int noId);
 *	noId - inteiro para o Id do nó que virará corrente
 *	refPtrIds - Endereço do vetor que recebrá os ids
 *	refTam - Endereço de um inteiro que receberá o tamanho do vetor
+*
 * $FV Valor retornado
 *	Se executou corretamente retornará GRA_CondRetOK.
 *	Se o grafo for vazio retornará GRA_CondRetGrafoVazio.
