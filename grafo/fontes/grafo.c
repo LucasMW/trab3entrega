@@ -640,7 +640,7 @@ GRA_tpCondRet GRA_IrParaNo(GRA_tppGrafo grafo,int noId)
 
 /***************************************************************************
 *
-*  Função: GRA &Obert Valor No Corrente
+*  Função: GRA &Obter Valor No Corrente
 *  ****/
 
 
@@ -650,6 +650,78 @@ GRA_tpCondRet GRA_ObterValorNoCorrente(GRA_tppGrafo grafo, void** endVar)
 }
 /* Fim função: GRA  &Obter valor No Corrente */
 
+/***************************************************************************
+*
+*  Função: GRA &Obter Vertices
+*  ****/
+
+GRA_tpCondRet GRA_ObterVertices(GRA_tppGrafo grafo,int* refPtrIds,int *tam)
+{
+	LIS_tppLista l;
+	GRA_noGrafo p;
+	int i=0;
+	
+	l= grafo->pVertices;
+	if(LIS_IrInicioLista(l)==LIS_CondRetListaVazia)
+		return GRA_CondRetGrafoVazio;
+	do
+	{
+		i++; //cont then;
+	}
+	while(LIS_AvancarElementoCorrente(l,1)!=LIS_CondRetFimLista);
+	LIS_IrInicioLista(l);
+	refPtrIds=(int*)malloc(sizeof(int)*i);
+	if(!refPtrIds)
+		return GRA_CondRetFaltouMemoria;
+	*tam=i;
+	i=0;
+	do
+	{
+		p=(GRA_noGrafo)LIS_ObterValor(l);
+		refPtrIds[i]=p->verticeId; // give the vertice
+		i++; 
+	}
+	while(LIS_AvancarElementoCorrente(l,1)!=LIS_CondRetFimLista);
+
+	return GRA_CondRetOK;
+}
+/* Fim função: GRA  &Obter Vértices */
+GRA_tpCondRet GRA_ObterArestasNo(GRA_tppGrafo grafo,int noId,int* refPtrIds,int *tam)
+{
+	GRA_noGrafo p; //percorredor
+	GRA_tpAresta acs; //percorredor
+	LIS_tppLista l,la; //percorredor
+	int i=0;
+	l=grafo->pVertices;
+	if(LIS_IrInicioLista(l)==LIS_CondRetListaVazia)
+		return GRA_CondRetGrafoVazio;
+	do
+	{	p=(GRA_noGrafo)LIS_ObterValor(l);
+		la=p->listaArestas;
+		if(LIS_IrInicioLista(la)==LIS_CondRetListaVazia)
+			return GRA_CondRetArestaNaoExiste;
+		do 
+		i++;
+		while(LIS_AvancarElementoCorrente(la,1)!=LIS_CondRetFimLista);
+		refPtrIds=(int*)malloc(sizeof(int)*i);
+		if(!refPtrIds)
+			return GRA_CondRetFaltouMemoria;
+		*tam=i;
+		i=0;
+		LIS_IrInicioLista(la);
+		do 
+		{	
+			acs=(GRA_tpAresta)LIS_ObterValor(la);
+			refPtrIds[i]=acs->verticeId;	
+			
+		}	
+		while(LIS_AvancarElementoCorrente(la,1)!=LIS_CondRetFimLista);
+
+	}
+	while(LIS_AvancarElementoCorrente(l,1)!=LIS_CondRetFimLista);
+	return GRA_CondRetOK;
+}
+/* Fim função: GRA  &Obter Arestas do No */
 
 /***************************************************************************
 *

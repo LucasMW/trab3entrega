@@ -548,7 +548,7 @@ GRA_tpCondRet GRA_ObterNoCorrente( GRA_tppGrafo grafo, int * refId);
 *	Se o grafo for vazio retorna GRA_CondRetGrafoVazio.
 *	Se o nó não existir retorna GRA_CondRetNoNaoExiste.
 *	Se não houver aresta entre os nós retorna GRA_CondRetArestaNaoExiste.
-* $AES
+* $AES Assertivas de saída
 * 	Se executou corretamente retorna GRA_CondRetOK e
 *    o no corrente do grafo será o nó cujo o id foi recebido
 *	 pelo parâmetro id vizinho
@@ -702,10 +702,74 @@ GRA_tpCondRet GRA_ExisteCaminho(GRA_tppGrafo grafo, int noInicioId, int noFimId)
 *	grafo - ponteiro para a cabeça do grafo a ser impresso
 *	refPtrIds - endereço do ponteiro que receberá o vetor de ids
 *	tam - endereço do inteiro que receberá o tamanho do vetor
+* $EAE Assertivas de Entrada
+*	grafo deve ser uma variável GRA_tppGrafo alocado pelo código usuário da função
+*   grafo deve ser, portanto, ponteiro não nulo. 
+*	grafo deve ser um grafo já alocado pela função GRA_CriarGrafo;
+*	o grafo não pode ser vazio
+*	refPtrIds deve ser o endereço de um ponteiro criado pelo código usuário.
+*	refPtrIds não pode ser, portanto, nulo.
+*	tam endereço e uma variável inteira alocada pelo código usuário
+*	tam não pode ser, portanto, ponteiro nulo
 * $FV Valor retornado
 *	Se o procedimento for bem sucedido, retornará GRA_CondRetOK
 *	Se o grafo for vazio retornará GRA_CondRetGrafoVazio.
-*
+*	Se faltou memória retornará GRA_CondRetFaltouMemória
+* $EAS Assertivas de Saída
+*   Se o procedimento for bem sucedido, retornará GRA_CondRetOK
+*	 o ponteiro cujo endereço foi passado pelo parâmetro refPtrIds
+*	 receberá um vetor de inteiros (Todos os ids dos vértices que
+*	 o grafo contém)e a variável cujo endereço foi informado ao parâmetro
+*	 tam receberá o tamanho desse vetor.
+*	Se o grafo for vazio retorna GRA_CondRetGrafoVazio e
+*	 os valores das variáveis cujos endereços foram passados aos 
+*	 parâmetros refPtrIds e tam permenacem inalterados.
+*	Se faltou memória retorna GRA_CondRetFaltouMemoria e
+*	 os valores das variáveis cujos endereços foram passados aos 
+*	 parâmetros refPtrIds e tam permenacem inalterados.
 *
 ***********************************************************************/
 GRA_tpCondRet GRA_ObterVertices(GRA_tppGrafo grafo,int* refPtrIds,int *tam);
+/***********************************************************************
+*
+* $FC Função: GRA &ObterArestasNo
+*
+* $ED Descrição da função
+*	Esta função retorna um vetor com todos os ids dos vértices adjacentes 
+*	ao vertice de noId informado.
+*	
+* $EP Parâmetros
+*	grafo - ponteiro para a cabeça do grafo a ser impresso
+*	noId - inteiro que é o id do nó cujas arestas serão obtidas
+*	refPtrIds - endereço do ponteiro que receberá o vetor de ids
+*	tam - endereço do inteiro que receberá o tamanho do vetor
+* $EAE Assertivas de Entrada
+*	grafo deve ser uma variável GRA_tppGrafo alocado pelo código usuário da função
+*   grafo deve ser, portanto, ponteiro não nulo. 
+*	grafo deve ser um grafo já alocado pela função GRA_CriarGrafo;
+*	o grafo não pode ser vazio
+*	noId deve conter um id válido, isto é , um id de um vértice presente
+*	no grafo.
+*	refPtrIds deve ser o endereço de um ponteiro criado pelo código usuário.
+*	refPtrIds não pode ser, portanto, nulo.
+*	tam endereço e uma variável inteira alocada pelo código usuário
+*	tam não pode ser, portanto, ponteiro nulo
+* $FV Valor retornado
+*	Se o procedimento for bem sucedido, retornará GRA_CondRetOK
+*	Se o grafo for vazio retornará GRA_CondRetGrafoVazio.
+*	Se faltou memória retornará GRA_CondRetFaltouMemória
+* $EAS Assertivas de Saída
+*   Se o procedimento for bem sucedido, retorna GRA_CondRetOK e
+*	 o ponteiro cujo endereço foi passado pelo parâmetro refPtrIds
+*	 receberá um vetor de inteiros (Todos os ids dos vértices que
+*	 o adjacentes ao nó cujo id foi informado ao parâmetro noId )
+*    e a variável cujo endereço foi informado ao parâmetro
+*	 tam receberá o tamanho desse vetor.
+*	Se o grafo for vazio retorna GRA_CondRetGrafoVazio e
+*	 os valores das variáveis cujos endereços foram passados aos 
+*	 parâmetros refPtrIds e tam permenacem inalterados.
+*	Se faltou memória retorna GRA_CondRetFaltouMemoria e
+*	 os valores das variáveis cujos endereços foram passados aos 
+*	 parâmetros refPtrIds e tam permenacem inalterados.
+***********************************************************************/
+GRA_tpCondRet GRA_ObterArestasNo(GRA_tppGrafo grafo,int noId,int* refPtrIds,int *tam);
