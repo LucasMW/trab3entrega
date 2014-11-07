@@ -13,6 +13,7 @@
 *
 *  $HA Histórico de evolução:
 *     Versão  Autor    Data     Observações
+*	  6		  LM	05/nov/2014 Adicionando assertivas e revisão do módulo
 *	  5		  LM	02/set/2014 Adaptar Interfaces de funções aos padrões da disciplina
 *     4       avs   01/fev/2006 criar linguagem script simbólica
 *     3       avs   08/dez/2004 uniformização dos exemplos
@@ -122,14 +123,14 @@
 
    LIS_tpCondRet LIS_DestruirLista( LIS_tppLista pLista )
    {
-	   LIS_tpCondRet acc;
+	   //LIS_tpCondRet acc;
       #ifdef _DEBUG
          assert( pLista != NULL ) ;
       #endif
 
-      acc=LIS_EsvaziarLista( pLista );
-	 if(acc) //!= 0 => Não OK
-		return acc;
+      //acc=LIS_EsvaziarLista( pLista );
+	 /*if(acc) //!= 0 => Não OK
+		return acc;*/
 
       free( pLista ) ;
 	  return LIS_CondRetOK;
@@ -466,9 +467,9 @@
    LIS_tpCondRet LIS_ProcurarValor( LIS_tppLista pLista ,
                                     void * pValor        )
    {
-
+	  tpElemLista * corrGuard;
       tpElemLista * pElem ;
-
+	  
       #ifdef _DEBUG
          assert( pLista  != NULL ) ;
       #endif
@@ -477,7 +478,7 @@
       {
          return LIS_CondRetListaVazia ;
       } /* if */
-
+	  corrGuard=pLista->pElemCorr; // Backup 
       for ( pElem  = pLista->pElemCorr ;
             pElem != NULL ;
             pElem  = pElem->pProx )
@@ -488,7 +489,7 @@
             return LIS_CondRetOK ;
          } /* if */
       } /* for */
-
+	  pLista->pElemCorr=corrGuard; //restore
       return LIS_CondRetNaoAchou ;
 
    } /* Fim função: LIS  &Procurar elemento contendo valor */

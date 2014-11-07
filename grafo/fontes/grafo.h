@@ -97,7 +97,7 @@ typedef enum {
 *	  refGrafo deve ser, portanto, um ponteiro não nulo
 *	  ExcluirValor é um ponteiro para uma função que tem a como objetivo excluir os
 *	  valores que serão usados nos vértices do grafo
-*
+*	  Excluir valor não poder ser ponteiro nulo
 *  $FV Valor retornado
 *     Se executou corretamente retornará a GRA_CondRetOK
 *     Se ocorreu alguma alocação de memória não conseguir ser realizada
@@ -133,10 +133,10 @@ GRA_tpCondRet GRA_CriarGrafo( GRA_tppGrafo* refgrafo,  void   ( * ExcluirValor )
 *	  grafo deve ser, portanto, um ponteiro não nulo.
 *
 *  $FV Valor retornado
-*     Se executou corretamente retorna retornará a GRA_CondRetOK
+*     Se executou corretamente retorna GRA_CondRetOK
 *    
 *
-* $EAE Assertivas de saída
+* $EAS Assertivas de saída
 *	
 *	Se a função operar corretamente o retorno será GRA_CondRetOK
 *	e o valor da vaiável GRA_tppGrafo passada continuará o mesmo,
@@ -656,6 +656,7 @@ GRA_tpCondRet GRA_IrParaNo(GRA_tppGrafo grafo,int noId);
 *	refPtrIds - Endereço do vetor que recebrá os ids
 *	refTam - Endereço de um inteiro que receberá o tamanho do vetor
 *
+* 
 * $FV Valor retornado
 *	Se executou corretamente retornará GRA_CondRetOK.
 *	Se o grafo for vazio retornará GRA_CondRetGrafoVazio.
