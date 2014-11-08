@@ -13,4 +13,4 @@
 02/OUT/2014; 2h; Realizar testes; Realizei um teste e diagnostiquei problemas
 06/OUT/2014; 8h; Revisar módulo; Revisei documentação e assertivas.
 06/OUT/2014; 1h; Revisar módulo; revisei alguns trechos de código enquanto documentava 
-07/OUT/2014
+07/OUT/2014;  4h;Estudar; Estudar arg. Corretude e elaborar as da função
