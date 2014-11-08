@@ -1,2 +1,11 @@
-﻿Data ; Horas Trabalhadas ; Tipo Tarefa ; Descrição da Tarefa Realizada
+Data ; Horas Trabalhadas ; Tipo Tarefa ; Descrição da Tarefa Realizada
 
+
+25/OUT/2014; 3h; Codificar módulo; Primeiras funções do labirinto.c
+01/OUT/2014; 3h; Realizar Testes; Testes iniciais com o modulo labirinto
+02/OUT/2014; 4h; Tentativa de resolução de problemas
+03/OUT/2014; 8h; Revisão geral do labirinto
+04/OUT/2014; 4h; Codificar modulo; refiz as funções do labirinto
+05/OUT/2014; 4h; Revisar módulo; Integração o labirinto a main
+06/OUT/2014; 5h; Revisar módulo; Criação da função de salvar e carregar
+07/OUT/2014; 3h; Revisar módulo; criação do solucionador
