@@ -19,12 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "grafo.h"
-
-
-#define LAB_OWN
-#include "labirinto.h"
-#undef LAB_OWN
-
+#include <string.h>
 
 
 /***********************************************************************
@@ -35,317 +30,761 @@
 ***********************************************************************/
 
 typedef enum
-		 {
-			 LAB_NaoPronto,
-			 LAB_Pronto,
-			 LAB_Jogando,
-			 LAB_GameOver,
-			 LAB_Vitoria
-		 } LAB_Estado;
-   typedef struct LAB_tagLabirinto {
+	   {
+		   PosLivre,
 
-          GRA_tppGrafo pGrafo ;
-               /* Ponteiro para a cabeça do grafo de que armazena as posições do labirinto*/
+		   PosParede,
 
-         char pronto;
-               /* Variável de Estado se o O labirinto está pronto pra executar*/
-		 int Rodada;
-				/* conta o número de jogadas já feitas */
+		   PosEntrada,
 
-         
-		 
-		 LAB_Estado estado;
-		 int idCorrente;
-			/* id da posição corrente */
+		   PosSaida
 
-   } LAB_tpLabirinto ;
-
-   /***********************************************************************
-*
-*  $TC Tipo de dados: LAB Descritor da posição jogável do Labirinto
-*
-*
-***********************************************************************/
-  
-	   
+	   } PosJog_Tipo;
 
    struct LAB_PosicaoJogavel
    {
-	      
+
 	   PosJog_Tipo tipo;
-	   int idNorte;
-	   int idSul;
-	   int idOeste;
-	   int idLeste;
+
+	   int corrente;
+	   /* 1 é a corrente, 0 nao é*/
+	   int caminho;
+	   
    };
    typedef struct LAB_PosicaoJogavel* LAB_PosJog;
 
 
-  
+			
+   typedef struct LAB_tagLabirinto {
 
-   /***** Protótipos das funções encapuladas no módulo *****/
+          GRA_tppGrafo pGrafo ;
+               /* Ponteiro para a cabeça do grafo de que armazena as posições do labirinto*/	 
 
-   static int VerificaPronto( LAB_tppLabirinto labirinto);
+		 int idCorrente;
+			/* id da posição corrente */
 
-/*****  Código das funções exportadas pelo módulo  *****/
+		 int xEntrada;
+
+		 int yEntrada;
+
+		 int xSaida;
+
+		 int ySaida;
+
+		 int xMax;
+
+		 int yMax;
 
 
-/***************************************************************************
-*
-*  Função: LAB  &Criar Labirinto
-*  ****/
+   } LAB_tpLabirinto ;
 
-LAB_tpCondRet LAB_CriarLabirinto( LAB_tppLabirinto* refLab)
+   typedef struct LAB_tagLabirinto * LAB_tppLabirinto ;
+
+
+
+int CheckFileExists(char* path)
+{
+FILE* tester;
+int r=0;
+tester=fopen(path,"wt");
+if(tester)
+ r=1;
+fclose(tester);
+return r;
+}
+
+   void LAB_CriarLabirinto( LAB_tppLabirinto* refLab)
 {
 	LAB_tpLabirinto* tempLab;
 	tempLab=(LAB_tpLabirinto*)malloc(sizeof(LAB_tpLabirinto));
 	
 	if(!tempLab)
-		return  LAB_CondRetFaltouMemoria;
+		return ;
 		/* if */
 	if(GRA_CriarGrafo(&tempLab->pGrafo,free)!=GRA_CondRetOK)
-		return LAB_CondRetFaltouMemoria;
+		return ;
 		/* if */
 
 	/* if */
 	/* Não houve problemas , retorne OK */
 	tempLab->idCorrente=0; //Id Corrents must not exist
-	tempLab->estado=LAB_NaoPronto;
+	
 	*refLab=tempLab; //return by reference
-	return LAB_CondRetOK;
+	return;
 }
 
-/* Fim função: LAB &Destruir Labirinto */
+void ExibirLabirinto ( LAB_tppLabirinto labirinto, int playMode){
+	
+	
+	int i, j;
+	LAB_PosJog posicao;
+	system("cls");
+	if (!playMode)
+		printf("Comandos:\nIr Cima:    w	Ir Baixo:    s	Ir Esquerda:    a  Ir Direita:    d\n Destruir Parede:    q Construir Parede: e  Jogar:   r\n Salvar:   z Carregar:   l\n Novo:    n\n");
+	else
+		printf("Comandos:\nIr Cima:    w	Ir Baixo:    s	Ir Esquerda:    a  Ir Direita:    d\n Construir:   r Salvar:   z Carregar:   l\n Solucionar :    o\n");
+	for (i = 0; i < labirinto->xMax; i++){
+		for (j = 0; j <labirinto->yMax; j++){
+			GRA_ObterValorNo(labirinto->pGrafo, (i * labirinto->xMax + j + 1),(void**)&posicao);
+			if (posicao->tipo == PosParede){
+				if (posicao->corrente == 0)
+				printf(" # ");
+				else{
+					if (playMode)
+					printf("|P|");
+					else
+					printf("|#|");
+				}
+			}
+			else
+				if (posicao->tipo == PosEntrada){
+					if (posicao->corrente == 0)
+					printf(" E ");
+					else
+					{
+					if (playMode)
+					printf("|P|");
+					else
+					printf("|E|");
+				}
+				}
+				else 
+					if (posicao->tipo == PosLivre){
+						if (playMode == 2){
+							if (posicao->caminho == 1)
+								printf (" X ");
+							else {
+								printf (" * ");
+							}
+						}
+						else{
+						if (posicao->corrente == 0)
+						printf(" * ");
+						else
+						{
+					if (playMode == 1)
+					printf("|P|");
+					else
+					printf("|*|");
+				}
+						}
+					}
+					else
+						if(posicao->corrente == 0)
+						printf(" S ");
+						else
+							printf("|S|");
+			}
+			printf("\n");
+			}
+	
+}
+	  
 
-LAB_tpCondRet LAB_DestruirLabirinto( LAB_tppLabirinto labirinto)
-{
-	GRA_DestruirGrafo(labirinto->pGrafo);
-	labirinto->pGrafo=NULL; //make it useless
-	labirinto->estado=LAB_NaoPronto;
-	labirinto->pronto=0;
-	labirinto->Rodada=0;
-	free(labirinto);
-	labirinto=NULL; //never be acessed again
-	return LAB_CondRetOK;
+void inserirEntrada ( LAB_tppLabirinto labirinto, int x, int y){
+	
+	LAB_PosJog posicao;
+	GRA_ObterValorNo(labirinto->pGrafo, (y * labirinto->xMax + x ) + 1,(void**)&posicao);
+	labirinto->idCorrente = (y * labirinto->xMax + x) + 1;
+	posicao->tipo = PosEntrada;
+	posicao->corrente = 1;
+	labirinto->yEntrada = y;
+	labirinto->xEntrada = x;
+}
+
+void inserirSaida ( LAB_tppLabirinto labirinto, int x, int y){
+	
+	LAB_PosJog posicao;
+	GRA_ObterValorNo(labirinto->pGrafo, (y * labirinto->xMax + x) + 1,(void**)&posicao);
+	posicao->tipo = PosSaida;
+	labirinto->ySaida = y;
+	labirinto->xSaida = x;
 	
 }
 
-/* Fim função: LAB &Destruir Labirinto */
+void destroiParede ( LAB_tppLabirinto labirinto) {
+	LAB_PosJog posicao;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente ,(void**)&posicao);
+	if (posicao->tipo != PosParede)
+		return;
+	posicao->tipo = PosLivre;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente - labirinto->xMax ,(void**)&posicao);
+	if (posicao->tipo != PosParede)
+		GRA_InserirAresta(labirinto->pGrafo, labirinto->idCorrente, labirinto->idCorrente - labirinto->xMax, 0);
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente + labirinto->xMax ,(void**)&posicao);
+	if (posicao->tipo != PosParede)
+		GRA_InserirAresta(labirinto->pGrafo, labirinto->idCorrente, labirinto->idCorrente + labirinto->xMax, 0);
+	if (labirinto->idCorrente % labirinto->xMax != 0){
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente + 1 ,(void**)&posicao);
+	if (posicao->tipo!= PosParede)
+		GRA_InserirAresta(labirinto->pGrafo, labirinto->idCorrente, labirinto->idCorrente + 1, 0);
+	}
+	if (labirinto->idCorrente % labirinto->xMax != 1){
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente - 1 ,(void**)&posicao);
+	if (posicao->tipo != PosParede)
+		GRA_InserirAresta(labirinto->pGrafo, labirinto->idCorrente, labirinto->idCorrente - 1, 0);
+	}
+	ExibirLabirinto ( labirinto,0);
+
+}
+
+void constroiParede ( LAB_tppLabirinto labirinto) {
+	LAB_PosJog posicao;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente ,(void**)&posicao);
+	if (posicao->tipo != PosLivre)
+		return;
+	posicao->tipo = PosParede;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente - labirinto->xMax ,(void**)&posicao);
+	if (posicao->tipo == PosLivre)
+		GRA_ExcluirAresta(labirinto->pGrafo, labirinto->idCorrente, labirinto->idCorrente - labirinto->xMax);
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente + labirinto->xMax ,(void**)&posicao);
+	if (posicao->tipo == PosLivre)
+		GRA_ExcluirAresta(labirinto->pGrafo, labirinto->idCorrente, labirinto->idCorrente + labirinto->xMax);
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente + 1 ,(void**)&posicao);
+	if (posicao->tipo == PosLivre,0)
+		GRA_ExcluirAresta(labirinto->pGrafo, labirinto->idCorrente, labirinto->idCorrente + 1);
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente - 1 ,(void**)&posicao);
+	if (posicao->tipo == PosLivre)
+		GRA_ExcluirAresta(labirinto->pGrafo, labirinto->idCorrente, labirinto->idCorrente - 1);
+	ExibirLabirinto ( labirinto,0);
+
+}
+
+void GeraLabirinto ( LAB_tppLabirinto labirinto, int xMax, int yMax ){
+	
+	int i, total;
+	LAB_PosJog posicaoNova;
+	total  = xMax * yMax;
+	printf("a");
+	for ( i = 0; i < total; i++){
+		posicaoNova = (LAB_PosJog)malloc(sizeof(struct LAB_PosicaoJogavel));
+		printf("a1");
+		posicaoNova->tipo = PosParede;	
+		printf("a2");
+		posicaoNova->corrente = 0;
+		printf("a3");
+		posicaoNova->caminho = 0;
+		printf("a4");
+		GRA_InserirNo( labirinto->pGrafo,posicaoNova,&labirinto->idCorrente ); 
+		printf("a5");
+	}
+	labirinto->xMax = xMax;
+	labirinto->yMax = yMax;	
+}
+
+void salvaLabirinto (LAB_tppLabirinto labirinto){
+	
+	FILE *fp;
+	int i,j,temp,arestas=0;
+	LAB_PosJog posicao;
+	char filename[50], tempStr[5];
+	printf("Digite o nome que deseja dar ao labirinto\n");
+	scanf("%s",filename);
+	strcpy(tempStr,".txt");
+	strcat(filename,tempStr);
+	fp=fopen(filename, "w");
+	if(fp == NULL){
+		printf("NULL");
+		system("pause");
+		exit(-1);
+	}
+
+	fprintf(fp,"%d\n",labirinto->xEntrada);
+	fprintf(fp,"%d\n",labirinto->yEntrada);
+	fprintf(fp,"%d\n",labirinto->xSaida);
+	fprintf(fp,"%d\n",labirinto->ySaida);
+	fprintf(fp,"%d\n",labirinto->xMax);
+	fprintf(fp,"%d\n",labirinto->yMax);
+
+	for (i = 0; i < labirinto->xMax; i++){
+		for (j = 0; j <labirinto->yMax; j++){
+			fprintf(fp,"%d ",(i * labirinto->xMax + j + 1));
+			GRA_ObterValorNo(labirinto->pGrafo, (i * labirinto->xMax + j + 1) ,(void**)&posicao);
+			fprintf(fp,"%d ",posicao->tipo);
+			if (GRA_ObterIdAresta (labirinto->pGrafo, (i * labirinto->xMax + j + 1), ((i - 1) * labirinto->xMax + j + 1),&temp)==GRA_CondRetOK)
+				arestas++;
+			if (GRA_ObterIdAresta (labirinto->pGrafo, (i * labirinto->xMax + j + 1), ((i + 1) * labirinto->xMax + j + 1),&temp)==GRA_CondRetOK)
+				arestas++;
+			if (GRA_ObterIdAresta (labirinto->pGrafo, (i * labirinto->xMax + j + 2), (i  * labirinto->xMax + j + 1),&temp)==GRA_CondRetOK)
+				arestas++;
+			if (GRA_ObterIdAresta (labirinto->pGrafo, (i * labirinto->xMax + j), (i  * labirinto->xMax + j + 1),&temp)==GRA_CondRetOK)
+				arestas++;
+			 
+			fprintf(fp,"%d ",arestas);
+
+			if (GRA_ObterIdAresta (labirinto->pGrafo, (i * labirinto->xMax + j + 1), ((i - 1) * labirinto->xMax + j + 1),&temp)==GRA_CondRetOK)
+				fprintf(fp,"%d ",((i - 1) * labirinto->xMax + j + 1));
+			if (GRA_ObterIdAresta (labirinto->pGrafo, (i * labirinto->xMax + j + 1), ((i + 1) * labirinto->xMax + j + 1),&temp)==GRA_CondRetOK)
+				fprintf(fp,"%d ",((i + 1) * labirinto->xMax + j + 1));
+			if (GRA_ObterIdAresta (labirinto->pGrafo, (i * labirinto->xMax + j + 2), (i  * labirinto->xMax + j + 1),&temp)==GRA_CondRetOK)
+				fprintf(fp,"%d ",(i  * labirinto->xMax + j + 2));
+			if (GRA_ObterIdAresta (labirinto->pGrafo, (i * labirinto->xMax + j), (i  * labirinto->xMax + j + 1),&temp)==GRA_CondRetOK)
+				fprintf(fp,"%d ",(i * labirinto->xMax + j));
+			arestas = 0;
+			fprintf(fp,"\n");
+		}
+		
+	}
+fclose(fp);
+
+}
+
+void carregaLabirinto ( LAB_tppLabirinto * refLab, char filename[]){
+	
+	FILE *fp;
+	int i,j,m,temp,x,y,idNo,idAresta,qtdArestas,xEnt,yEnt,xSai,ySai;
+	char tempStr[5];
+	PosJog_Tipo tipo;
+	LAB_PosJog posicao;
+	LAB_tppLabirinto labirinto;
+	strcpy(tempStr,".txt");
+	strcat(filename,tempStr);
+	
+	fp=fopen(filename, "r");
+	LAB_CriarLabirinto(&labirinto);
+	fscanf(fp,"%d %d",&xEnt,&yEnt);
+	labirinto->xEntrada = xEnt;
+	labirinto->yEntrada = yEnt;
+	fscanf(fp,"%d %d",&xSai,&ySai);
+	labirinto->xSaida = xSai;
+	labirinto->ySaida = ySai;
+	fscanf(fp,"%d %d",&x,&y);
+	GeraLabirinto(labirinto,x,y);
+	for (i = 0; i < labirinto->xMax; i++){
+		for (j = 0; j <labirinto->yMax; j++){
+			fscanf(fp,"%d", &idNo);
+			GRA_ObterValorNo(labirinto->pGrafo, idNo ,(void**)&posicao);
+			fscanf(fp,"%d", &tipo);
+			posicao->tipo = tipo;
+			fscanf(fp,"%d", &qtdArestas);
+			for ( m = 0; m < qtdArestas; m++){
+				fscanf(fp,"%d",&idAresta);
+				GRA_InserirAresta(labirinto->pGrafo,idNo,idAresta,0);
+			}			
+		}
+		
+	}
+	ExibirLabirinto(labirinto,0);
+	*refLab = labirinto;
+
+}
+
+/* Fim função: LAB &Gera Labirinto */
 
 /***************************************************************************
 *
-*  Função: LAB &Inserir Posicao Norte
+*  Função: LAB &Exibir Labirinto 
 *  ****/
 
-LAB_tpCondRet LAB_InserirPosicaoNorte ( LAB_tppLabirinto labirinto, PosJog_Tipo tipo )
-{
-	LAB_PosJog posicaoNova, posicaoOrigem;
-	posicaoNova = (LAB_PosJog)malloc(sizeof(LAB_PosJog));
-	posicaoNova->tipo = tipo;
-	posicaoNova->idLeste = 0;
-	posicaoNova->idOeste = 0;
-	posicaoNova->idNorte = 0;
-	posicaoNova->idSul = labirinto->idCorrente;
-	if (labirinto->idCorrente = 0){
-		if( GRA_InserirNo( labirinto->pGrafo,posicaoNova,&labirinto->idCorrente ) != GRA_CondRetOK)
-			return LAB_CondRetFaltouMemoria;
-		return LAB_CondRetOK;
+
+
+void irNorte (LAB_tppLabirinto labirinto){
+	LAB_PosJog origem,destino;
+	if (labirinto->idCorrente <= labirinto->yMax)
+		return;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente ,(void**)&origem);
+	origem->corrente = 0;
+	labirinto->idCorrente = labirinto->idCorrente - labirinto->xMax;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente,(void**)&destino);
+	destino->corrente = 1;
+	ExibirLabirinto(labirinto,0);
 	}
-	
-	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente,(void**)&posicaoOrigem);
-	if (posicaoOrigem->idNorte != 0){
-		free(posicaoNova);
-		return LAB_tpCondRetJaExistePosicao;	
+
+void irSul (LAB_tppLabirinto labirinto){
+	LAB_PosJog origem,destino;
+	if (labirinto->idCorrente > (labirinto->xMax * labirinto->yMax) - labirinto->xMax)
+		return;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente ,(void**)&origem);
+	origem->corrente = 0;
+	labirinto->idCorrente = labirinto->idCorrente + labirinto->xMax ;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente,(void**)&destino);
+	destino->corrente = 1;
+	ExibirLabirinto(labirinto,0);
 	}
-	if (GRA_InserirNo( labirinto->pGrafo,posicaoNova,&labirinto->idCorrente ) != GRA_CondRetOK)
-		return LAB_CondRetFaltouMemoria;
-	if (GRA_InserirAresta(labirinto->pGrafo,labirinto->idCorrente,posicaoNova->idSul, 0)!= GRA_CondRetOK)
-		return LAB_CondRetFaltouMemoria; /* Aqui deve ser checada a condret retornada para ver corretamente o erro */
-	posicaoOrigem->idNorte = labirinto->idCorrente;
-	return LAB_CondRetOK;
+
+void irLeste (LAB_tppLabirinto labirinto){
+	LAB_PosJog origem,destino;
+	if (labirinto->idCorrente == labirinto->xMax * labirinto->yMax)
+		return;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente ,(void**)&origem);
+	origem->corrente = 0;
+	labirinto->idCorrente = labirinto->idCorrente + 1;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente,(void**)&destino);
+	destino->corrente = 1;
+	ExibirLabirinto(labirinto,0);
+	}
+
+void irOeste (LAB_tppLabirinto labirinto){
+	LAB_PosJog origem,destino;
+	if (labirinto->idCorrente == 1)
+		return;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente ,(void**)&origem);
+	origem->corrente = 0;
+	labirinto->idCorrente = labirinto->idCorrente - 1;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente,(void**)&destino);
+	destino->corrente = 1;
+	ExibirLabirinto ( labirinto,0);		
+	}
+
+int andarNorte ( LAB_tppLabirinto labirinto){
+
+	LAB_PosJog origem,destino;
+	int temp;
+	if (labirinto->idCorrente <= labirinto->yMax)
+		return 0;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente ,(void**)&origem);
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente - labirinto->xMax,(void**)&destino);
+	if (destino->tipo == PosParede || GRA_ObterIdAresta (labirinto->pGrafo, labirinto->idCorrente, labirinto->idCorrente - labirinto->xMax, &temp)==GRA_CondRetArestaNaoExiste)
+		return 0;
+	origem->corrente = 0;
+	labirinto->idCorrente = labirinto->idCorrente - labirinto->xMax;
+	destino->corrente = 1;
+	ExibirLabirinto(labirinto,1);
+	return 1;
+}
+int andarSul (LAB_tppLabirinto labirinto){
+	LAB_PosJog origem,destino;
+	int temp;
+	if (labirinto->idCorrente > (labirinto->xMax * labirinto->yMax) - labirinto->xMax)
+		return 0;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente ,(void**)&origem);
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente + labirinto->xMax,(void**)&destino);
+	if (destino->tipo == PosParede || GRA_ObterIdAresta (labirinto->pGrafo, labirinto->idCorrente, labirinto->idCorrente + labirinto->xMax,&temp)==GRA_CondRetArestaNaoExiste)
+		return 0;
+	origem->corrente = 0;
+	labirinto->idCorrente = labirinto->idCorrente + labirinto->xMax;
+	destino->corrente = 1;
+	ExibirLabirinto(labirinto,1);
+	return 1;
 }
 
-/* Fim função: LAB &Inserir Posicao Norte */
+int andarOeste (LAB_tppLabirinto labirinto){
+	LAB_PosJog origem,destino;
+	int temp;
+	if (labirinto->idCorrente == 1)
+		return 0;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente ,(void**)&origem);
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente - 1,(void**)&destino);
+	if (destino->tipo == PosParede ||GRA_ObterIdAresta (labirinto->pGrafo, labirinto->idCorrente, labirinto->idCorrente - 1,&temp)==GRA_CondRetArestaNaoExiste )
+		return 0;
+	origem->corrente = 0;
+	labirinto->idCorrente = labirinto->idCorrente - 1;
+	destino->corrente = 1;
+	ExibirLabirinto(labirinto,1);
+	return 1;
+}
 
-/***************************************************************************
-*
-*  Função: LAB &Inserir Posicao Sul
-*  ****/
+int andarLeste (LAB_tppLabirinto labirinto){
+	LAB_PosJog origem,destino;
+	int temp;
+	if (labirinto->idCorrente == labirinto->xMax * labirinto->yMax)
+		return 0;
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente ,(void**)&origem);
+	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente + 1,(void**)&destino);
+	if (destino->tipo == PosParede ||GRA_ObterIdAresta (labirinto->pGrafo, labirinto->idCorrente, labirinto->idCorrente + 1,&temp)==GRA_CondRetArestaNaoExiste)
+		return 0;
+	origem->corrente = 0;
+	labirinto->idCorrente = labirinto->idCorrente + 1;
+	destino->corrente = 1;
+	ExibirLabirinto(labirinto,1);
+	return 1;
+}
 
-LAB_tpCondRet LAB_InserirPosicaoSul ( LAB_tppLabirinto labirinto, PosJog_Tipo tipo )
-{
-	LAB_PosJog posicaoNova, posicaoOrigem;
-	posicaoNova = (LAB_PosJog)malloc(sizeof(LAB_PosJog));
-	posicaoNova->tipo = tipo;
-	posicaoNova->idLeste = 0;
-	posicaoNova->idOeste = 0;
-	posicaoNova->idNorte = labirinto->idCorrente;
-	posicaoNova->idSul = 0;
-	if (labirinto->idCorrente = 0){
-		if( GRA_InserirNo( labirinto->pGrafo,posicaoNova,&labirinto->idCorrente ) != GRA_CondRetOK)
-			return LAB_CondRetFaltouMemoria;
-		return LAB_CondRetOK;
+void rightHandSolver( LAB_tppLabirinto labirinto){
+
+	int i,dirV = 0, dirH = 0, visitados[500],marked = 0,loopCount = 0,solved = 0;
+	LAB_PosJog posicao;
+	for (i = 0; i < 500; i++)
+		visitados[i] = 0;
+	
+	while (1){
+		if (labirinto->idCorrente == labirinto->ySaida * labirinto->xMax + labirinto->xSaida + 1){
+			printf("Solucionado\n");
+			solved = 1;
+			break;
+		}
+		if ( loopCount > labirinto->xMax * labirinto->yMax * 2){
+			printf("Não há soluçao!!\n");
+			break;
+		}
+		loopCount++;
+		if (visitados[labirinto->idCorrente] != 1){
+			marked++;
+			visitados[labirinto->idCorrente] = 1;
+		}
+	if ( visitados[labirinto->idCorrente + 1] == 0)
+		if (andarLeste(labirinto)==1){
+			dirH = 1;
+			continue;
+		}
+	if ( visitados[labirinto->idCorrente + labirinto->xMax] == 0)
+		if (andarSul(labirinto)==1){
+			dirV = 1;
+			continue;
+		}
+	if ( visitados[labirinto->idCorrente - 1] == 0)
+		if (andarOeste(labirinto) == 1){
+			dirH = 0;
+			continue;
+		}
+	if ( visitados[labirinto->idCorrente - labirinto->xMax] == 0)
+		if (andarNorte(labirinto) == 1){
+			dirV = 0;
+			continue;
+		}
+		if (dirV == 0){
+			if (andarNorte(labirinto) == 1){
+				dirV = 0;
+				continue;
+			}
+			if (dirH == 0){
+				if (andarOeste(labirinto) == 1){
+					dirH = 0;
+					continue;
+				}
+			if (andarSul(labirinto) == 1){
+				dirV = 1;
+				continue;
+			}
+			if (andarLeste(labirinto) == 1){
+				dirH = 1;
+				continue;
+			}				
+			}else{
+				if (andarLeste(labirinto) == 1){
+					dirH = 1;
+					continue;
+				}
+				if (andarSul(labirinto) == 1){
+				dirV = 1;
+				continue;
+			}
+				if (andarOeste(labirinto) == 1){
+				dirH = 0;
+				continue;
+				}
+			}
+			
+		}else{
+		if (andarSul(labirinto) == 1){
+			dirV = 1;
+			continue;
+			}
+			if (dirH == 0){
+				if (andarOeste(labirinto) == 1){
+					dirH = 0;
+					continue;
+				}
+				if (andarNorte(labirinto) == 1){
+				dirV = 0;
+				continue;
+				}
+				if (andarLeste(labirinto) == 1){
+				dirH = 1;
+				continue;
+				}
+			}else{
+				if (andarLeste(labirinto) == 1){
+					dirH = 1;
+					continue;
+				}
+				if (andarNorte(labirinto) == 1){
+				dirV = 0;
+				continue;
+				}
+				if (andarOeste(labirinto) == 1){
+				dirH = 0;
+				continue;
+				}
+			}	
+		
+		}
+
 	}
+	if (solved){
+		for (i = 1; i <= labirinto->xMax * labirinto->yMax; i++){
+			if (visitados[i] == 1){
+				GRA_ObterValorNo(labirinto->pGrafo, i,(void**)&posicao);
+				posicao->caminho = 1;
+			}
+		}
 	
-	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente,(void**)&posicaoOrigem);
-	if (posicaoOrigem->idSul != 0){
-		free(posicaoNova);
-		return LAB_tpCondRetJaExistePosicao;	
 	}
-	if (GRA_InserirNo( labirinto->pGrafo,posicaoNova,&labirinto->idCorrente ) != GRA_CondRetOK)
-		return LAB_CondRetFaltouMemoria;
-	if (GRA_InserirAresta(labirinto->pGrafo,labirinto->idCorrente,posicaoNova->idNorte, 0)!= GRA_CondRetOK)
-		return LAB_CondRetFaltouMemoria; /* Aqui deve ser checada a condret retornada para ver corretamente o erro */
-	posicaoOrigem->idSul = labirinto->idCorrente;
-	return LAB_CondRetOK;
+	ExibirLabirinto(labirinto,2);
+	printf("Aperta qualquer comando para voltar a exibição normal");
 }
 
-/* Fim função: LAB &Inserir Posicao Sul */
 
 
-/***************************************************************************
-*
-*  Função: LAB &Inserir Posicao Oeste
-*  ****/
+/* Fim função: LAB &Exibir Labirinto */
 
-LAB_tpCondRet LAB_InserirPosicaoOeste ( LAB_tppLabirinto labirinto, PosJog_Tipo tipo )
-{
-	LAB_PosJog posicaoNova, posicaoOrigem;
-	posicaoNova = (LAB_PosJog)malloc(sizeof(LAB_PosJog));
-	posicaoNova->tipo = tipo;
-	posicaoNova->idLeste = labirinto->idCorrente;
-	posicaoNova->idOeste = 0;
-	posicaoNova->idNorte = 0;
-	posicaoNova->idSul = 0;
-	if (labirinto->idCorrente = 0){
-		if( GRA_InserirNo( labirinto->pGrafo,posicaoNova,&labirinto->idCorrente ) != GRA_CondRetOK)
-			return LAB_CondRetFaltouMemoria;
-		return LAB_CondRetOK;
+
+int main (){
+	int linhas, colunas, xEntrada, yEntrada, xSaida, ySaida, n = 1, playMode = 0, loadFlag = 0;
+	char dir,filename[50];
+	LAB_PosJog posicao;
+	LAB_tppLabirinto labirinto;
+	printf("Deseja carregar um labirinto ja existente? ( s | n )\n");
+	scanf("%c",&dir);
+	if (dir == 's'){
+		printf("Qual o nome do arquivo?\n");
+		scanf("%s",filename);
+		carregaLabirinto(&labirinto,filename);
+		loadFlag = 1;
 	}
+	if (!loadFlag){
+	printf("Informe o numero de linhas:\n");
+	scanf("%d",&linhas);
+	printf("Informe o numero de colunas:\n");
+	scanf("%d",&colunas);
+	printf("Informe a coordenada x da entrada:\n");
+	scanf("%d",&xEntrada);
 	
-	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente,(void**)&posicaoOrigem);
-	if (posicaoOrigem->idOeste != 0){
-		free(posicaoNova);
-		return LAB_tpCondRetJaExistePosicao;	
+	
+	
+	do{
+	while(xEntrada >= colunas){	
+		printf("Valor alto demais! Insira um valor de 0 a %d\n", colunas - 1);
+		scanf("%d",&xEntrada);
 	}
-	if (GRA_InserirNo( labirinto->pGrafo,posicaoNova,&labirinto->idCorrente ) != GRA_CondRetOK)
-		return LAB_CondRetFaltouMemoria;
-	if (GRA_InserirAresta(labirinto->pGrafo,labirinto->idCorrente,posicaoNova->idLeste, 0)!= GRA_CondRetOK)
-		return LAB_CondRetFaltouMemoria; /* Aqui deve ser checada a condret retornada para ver corretamente o erro */
-	posicaoOrigem->idOeste = labirinto->idCorrente;
-	return LAB_CondRetOK;
-}
-
-/* Fim função: LAB &Inserir Posicao Oeste */
-
-/***************************************************************************
-*
-*  Função: LAB &Inserir Posicao Leste
-*  ****/
-
-LAB_tpCondRet LAB_InserirPosicaoLeste ( LAB_tppLabirinto labirinto, PosJog_Tipo tipo )
-{
-	LAB_PosJog posicaoNova, posicaoOrigem;
-	posicaoNova = (LAB_PosJog)malloc(sizeof(LAB_PosJog));
-	posicaoNova->tipo = tipo;
-	posicaoNova->idLeste = 0;
-	posicaoNova->idOeste = labirinto->idCorrente;
-	posicaoNova->idNorte = 0;
-	posicaoNova->idSul = 0;
-	if (labirinto->idCorrente = 0){
-		if( GRA_InserirNo( labirinto->pGrafo,posicaoNova,&labirinto->idCorrente ) != GRA_CondRetOK)
-			return LAB_CondRetFaltouMemoria;
-		return LAB_CondRetOK;
+	printf("Informe a coordenada y da entrada:\n");
+	scanf("%d",&yEntrada);
+	while(yEntrada >= linhas){	
+		printf("Valor alto demais! Insira um valor de 0 a %d\n", linhas - 1);
+		scanf("%d",&yEntrada);
 	}
-	
-	GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente,(void**)&posicaoOrigem);
-	if (posicaoOrigem->idLeste != 0){
-		free(posicaoNova);
-		return LAB_tpCondRetJaExistePosicao;	
+	printf("Informe a coordenada x da saida:\n");
+	scanf("%d",&xSaida);
+	while(xSaida >= colunas){	
+		printf("Valor alto demais! Insira um valor de 0 a %d\n", colunas - 1);
+		scanf("%d",&xSaida);
 	}
-	if (GRA_InserirNo( labirinto->pGrafo,posicaoNova,&labirinto->idCorrente ) != GRA_CondRetOK)
-		return LAB_CondRetFaltouMemoria;
-	if (GRA_InserirAresta(labirinto->pGrafo,labirinto->idCorrente,posicaoNova->idOeste, 0)!= GRA_CondRetOK)
-		return LAB_CondRetFaltouMemoria; /* Aqui deve ser checada a condret retornada para ver corretamente o erro */
-	posicaoOrigem->idOeste = labirinto->idCorrente;
-	return LAB_CondRetOK;
-}
-
-/* Fim função: LAB &Inserir Posicao Oeste */
-
-/***************************************************************************
-*
-*  Função: LAB &Ir Posicao Norte
-*  ****/
-
-LAB_tpCondRet IrPosicaoNorte ( LAB_tppLabirinto labirinto ){
-
-	LAB_PosJog posicaoCorrente;
-	if (GRA_ObterValorNo(labirinto->pGrafo,labirinto->idCorrente,(void**)&posicaoCorrente)!= GRA_CondRetOK)
-		return LAB_CondRetLabirintoVazio;
-	if (posicaoCorrente->idNorte == 0)
-		return LAB_CondRetNaoExisteCaminho;
-	labirinto->idCorrente = posicaoCorrente->idNorte;
-	return LAB_CondRetOK;
+	printf("Informe a coordenada y da saida:\n");
+	scanf("%d",&ySaida);
+	while(ySaida >= linhas){	
+		printf("Valor alto demais! Insira um valor de 0 a %d\n", linhas - 1);
+		scanf("%d",&ySaida);
+	}
+	if (ySaida == yEntrada && xSaida == xEntrada)
+		printf("Entrada e saida no mesmo lugar! Tente de novo!\n");
+	}while (ySaida == yEntrada && xSaida == xEntrada);
 	
-}
-
-/* Fim função: LAB &Ir Posicao Norte */
-
-/***************************************************************************
-*
-*  Função: LAB &Ir Posicao Sul
-*  ****/
-
-LAB_tpCondRet IrPosicaoSul ( LAB_tppLabirinto labirinto ){
-
-	LAB_PosJog posicaoCorrente;
-	if (GRA_ObterValorNo(labirinto->pGrafo,labirinto->idCorrente,(void**)&posicaoCorrente)!= GRA_CondRetOK)
-		return LAB_CondRetLabirintoVazio;
-	if (posicaoCorrente->idSul == 0)
-		return LAB_CondRetNaoExisteCaminho;
-	labirinto->idCorrente = posicaoCorrente->idSul;
-	return LAB_CondRetOK;
+	LAB_CriarLabirinto(&labirinto);
+	printf("1");
+	system("pause");
+	GeraLabirinto(labirinto,linhas,colunas);
+	printf("2");
+	system("pause");
+	inserirEntrada(labirinto,xEntrada,yEntrada);
+	printf("3");
+	system("pause");
+	inserirSaida(labirinto,xSaida,ySaida);
+	printf("4");
+	system("pause");
+	ExibirLabirinto(labirinto,0);
+	}
+	while (n){
+		scanf("%c",&dir);
+		if (playMode == 0){
+		if (dir == 'w')
+			irNorte(labirinto);
+		if (dir == 'a')
+			irOeste(labirinto);
+		if (dir == 's')
+			irSul(labirinto);
+		if (dir == 'd')
+			irLeste(labirinto);
+		if (dir == 'q')
+			destroiParede(labirinto);
+		if (dir == 'e')
+			constroiParede(labirinto);
+		if (dir == 'z')
+			salvaLabirinto(labirinto);
+		if (dir =='l')
+		{
+			printf("Qual o nome do arquivo?\n");
+			scanf("%s",filename);
+			carregaLabirinto(&labirinto,filename);
+		}
+		if (dir == 'r'){
+			playMode = 1;
+		GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente ,(void**)&posicao);
+		posicao->corrente = 0;
+		labirinto->idCorrente = labirinto->yEntrada * labirinto->xMax + labirinto->xEntrada + 1;
+		GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente ,(void**)&posicao);
+		posicao->corrente = 1;
+		ExibirLabirinto(labirinto,playMode);
+		}
+		if (dir == 'n'){
+		printf("Informe o numero de linhas:\n");
+	scanf("%d",&linhas);
+	printf("Informe o numero de colunas:\n");
+	scanf("%d",&colunas);
+	printf("Informe a coordenada x da entrada:\n");
+	scanf("%d",&xEntrada);
 	
-}
-
-/* Fim função: LAB &Ir Posicao Sul */
-
-/***************************************************************************
-*
-*  Função: LAB &Ir Posicao Oeste 
-*  ****/
-
-LAB_tpCondRet IrPosicaoOeste ( LAB_tppLabirinto labirinto ){
-
-	LAB_PosJog posicaoCorrente;
-	if (GRA_ObterValorNo(labirinto->pGrafo,labirinto->idCorrente,(void**)&posicaoCorrente)!= GRA_CondRetOK)
-		return LAB_CondRetLabirintoVazio;
-	if (posicaoCorrente->idOeste  == 0)
-		return LAB_CondRetNaoExisteCaminho;
-	labirinto->idCorrente = posicaoCorrente->idOeste ;
-	return LAB_CondRetOK;
 	
-}
-
-/* Fim função: LAB &Ir Posicao Oeste */
-
-/***************************************************************************
-*
-*  Função: LAB &Ir Posicao Leste
-*  ****/
-
-LAB_tpCondRet IrPosicaoLeste ( LAB_tppLabirinto labirinto ){
-
-	LAB_PosJog posicaoCorrente;
-	if (GRA_ObterValorNo(labirinto->pGrafo,labirinto->idCorrente,(void**)&posicaoCorrente)!= GRA_CondRetOK)
-		return LAB_CondRetLabirintoVazio;
-	if (posicaoCorrente->idLeste == 0)
-		return LAB_CondRetNaoExisteCaminho;
-	labirinto->idCorrente = posicaoCorrente->idLeste;
-	return LAB_CondRetOK;
 	
+	do{
+	while(xEntrada >= colunas){	
+		printf("Valor alto demais! Insira um valor de 0 a %d\n", colunas - 1);
+		scanf("%d",&xEntrada);
+	}
+	printf("Informe a coordenada y da entrada:\n");
+	scanf("%d",&yEntrada);
+	while(yEntrada >= linhas){	
+		printf("Valor alto demais! Insira um valor de 0 a %d\n", linhas - 1);
+		scanf("%d",&yEntrada);
+	}
+	printf("Informe a coordenada x da saida:\n");
+	scanf("%d",&xSaida);
+	while(xSaida >= colunas){	
+		printf("Valor alto demais! Insira um valor de 0 a %d\n", colunas - 1);
+		scanf("%d",&xSaida);
+	}
+	printf("Informe a coordenada y da saida:\n");
+	scanf("%d",&ySaida);
+	while(ySaida >= linhas){	
+		printf("Valor alto demais! Insira um valor de 0 a %d\n", linhas - 1);
+		scanf("%d",&ySaida);
+	}
+	if (ySaida == yEntrada && xSaida == xEntrada)
+		printf("Entrada e saida no mesmo lugar! Tente de novo!\n");
+	}while (ySaida == yEntrada && xSaida == xEntrada);
+	
+	LAB_CriarLabirinto(&labirinto);
+	GeraLabirinto(labirinto,linhas,colunas);
+	inserirEntrada(labirinto,xEntrada,yEntrada);
+	inserirSaida(labirinto,xSaida,ySaida);
+	ExibirLabirinto(labirinto,playMode);
+		}
+		}
+		else{
+		GRA_ObterValorNo(labirinto->pGrafo, labirinto->idCorrente ,(void**)&posicao);
+		if (posicao->tipo == PosSaida)
+			printf("Parabens! Voce chegou a saida!\n");
+		if (dir == 'w')
+			andarNorte(labirinto);
+		if (dir == 'a')
+			andarOeste(labirinto);
+		if (dir == 's')
+			andarSul(labirinto);
+		if (dir == 'd')
+			andarLeste(labirinto);
+		if (dir == 'r'){
+			playMode = 0;
+			ExibirLabirinto(labirinto,playMode);
+		}
+		if (dir == 'o')
+			rightHandSolver(labirinto);
+		if (dir == 'z')
+			salvaLabirinto(labirinto);
+		if (dir =='l')
+		{
+			printf("Qual o nome do arquivo?\n");
+			scanf("%s",filename);
+			carregaLabirinto(&labirinto,filename);
+		}
+		}
+	}
 }
-
-/* Fim função: LAB &Ir Posicao Leste */
-

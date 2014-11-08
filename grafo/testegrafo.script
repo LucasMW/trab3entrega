@@ -18,11 +18,9 @@
 =declararparm   FatouMemoria    int  1
 =declararparm   Vazio       	int  2
 =declararparm	ArestaJaExiste	int  3
-=declararparm	NoNaoExiste	int  4
+=declararparm	NoNaoExiste		int  4
 =declararparm	ArestaNaoExiste	int  5
-=declararparm	JaEsta		int 6 
-=declararparm 	CaminhoExiste 	int 7
-=declararparm 	CaminhoNaoExiste int 8
+=declararparm	JaEsta			int	 6
 
 ==Declarar Strings
 =declararparm   str0    string  "abcdefg"
@@ -166,7 +164,7 @@
 =inseriraresta grafo2 1 2 0 OK
 =imprimirgrafo grafo2 OK
 
-==Testando a exclus„o de arestas
+==Testando a exclus√£o de arestas
 
 =excluiraresta grafo2 1 3 OK
 =imprimirgrafo grafo2 OK
@@ -179,17 +177,5 @@
 =excluiraresta grafo2 1 8 OK
 =excluiraresta grafo2 1 8 ArestaNaoExiste
 =imprimirgrafo grafo2 OK
-
-==Testando Caminho Existe
-=existecaminho grafo2 4 5 CaminhoNaoExiste
-=existecaminho grafo2 2 8 CaminhoExiste
-=existecaminho grafo2 15 16 CaminhoExiste
-=existecaminho grafo2 2 16 CaminhoExiste
-=existecaminho grafo2 2 17 CaminhoExiste
-
-==Esvaziar e imprimir
 =esvaziargrafo grafo2 OK
 =imprimirgrafo grafo2 Vazio
-
-==Testando Caminho Existe em vazios
-=existecaminho grafo2 4 5 Vazio

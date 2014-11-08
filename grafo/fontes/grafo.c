@@ -481,7 +481,8 @@ GRA_tpCondRet  GRA_ImprimirGrafo(GRA_tppGrafo grafo)
 			{
 				
 				acs=(GRA_tpAresta)LIS_ObterValor(l);
-				printf("%d ",acs->verticeId);
+				
+				printf("%d ",acs->noApontado->verticeId);
 			
 			}while(LIS_AvancarElementoCorrente(l,1)!=LIS_CondRetFimLista);
 			printf("} ");
@@ -512,7 +513,7 @@ GRA_tpCondRet GRA_EsvaziarGrafo( GRA_tppGrafo grafo )
 	/* if */
 	do{
 		noTemp=(GRA_noGrafo)LIS_ObterValor(grafo->pVertices);
-		LIS_EsvaziarLista(noTemp->listaArestas);
+		LIS_DestruirLista(noTemp->listaArestas); //A Lista de Arestas deve ser destruída(Aka Desalocada)
 	}while(LIS_AvancarElementoCorrente(grafo->pVertices,1)!=LIS_CondRetFimLista);
 
 	
@@ -655,7 +656,7 @@ GRA_tpCondRet GRA_ObterValorNoCorrente(GRA_tppGrafo grafo, void** endVar)
 *  Função: GRA &Obter Vertices
 *  ****/
 
-GRA_tpCondRet GRA_ObterVertices(GRA_tppGrafo grafo,int* refPtrIds,int *tam)
+GRA_tpCondRet GRA_ObterVertices(GRA_tppGrafo grafo,int** refPtrIds,int *tam)
 {
 	LIS_tppLista l;
 	GRA_noGrafo p;
@@ -670,15 +671,15 @@ GRA_tpCondRet GRA_ObterVertices(GRA_tppGrafo grafo,int* refPtrIds,int *tam)
 	}
 	while(LIS_AvancarElementoCorrente(l,1)!=LIS_CondRetFimLista);
 	LIS_IrInicioLista(l);
-	refPtrIds=(int*)malloc(sizeof(int)*i);
-	if(!refPtrIds)
+	*refPtrIds=(int*)malloc(sizeof(int)*i);
+	if(*refPtrIds==NULL)
 		return GRA_CondRetFaltouMemoria;
 	*tam=i;
 	i=0;
 	do
 	{
 		p=(GRA_noGrafo)LIS_ObterValor(l);
-		refPtrIds[i]=p->verticeId; // give the vertice
+		(*refPtrIds)[i]=p->verticeId; // give the vertice
 		i++; 
 	}
 	while(LIS_AvancarElementoCorrente(l,1)!=LIS_CondRetFimLista);
@@ -686,25 +687,30 @@ GRA_tpCondRet GRA_ObterVertices(GRA_tppGrafo grafo,int* refPtrIds,int *tam)
 	return GRA_CondRetOK;
 }
 /* Fim função: GRA  &Obter Vértices */
-GRA_tpCondRet GRA_ObterArestasNo(GRA_tppGrafo grafo,int noId,int* refPtrIds,int *tam)
+GRA_tpCondRet GRA_ObterArestasNo(GRA_tppGrafo grafo,int noId,int** refPtrIds,int *tam)
 {
 	GRA_noGrafo p; //percorredor
 	GRA_tpAresta acs; //percorredor
 	LIS_tppLista l,la; //percorredor
+	GRA_tpCondRet cr;
 	int i=0;
 	l=grafo->pVertices;
 	if(LIS_IrInicioLista(l)==LIS_CondRetListaVazia)
 		return GRA_CondRetGrafoVazio;
-	do
-	{	p=(GRA_noGrafo)LIS_ObterValor(l);
+	cr=GRA_IrParaNo(grafo,noId);
+
+	if(cr!=GRA_CondRetOK)
+		return cr;
+	
+		p=(GRA_noGrafo)LIS_ObterValor(l);
 		la=p->listaArestas;
 		if(LIS_IrInicioLista(la)==LIS_CondRetListaVazia)
 			return GRA_CondRetArestaNaoExiste;
 		do 
-		i++;
+			i++;
 		while(LIS_AvancarElementoCorrente(la,1)!=LIS_CondRetFimLista);
-		refPtrIds=(int*)malloc(sizeof(int)*i);
-		if(!refPtrIds)
+		*refPtrIds=(int*)malloc(sizeof(int)*i);
+		if(*refPtrIds==NULL)
 			return GRA_CondRetFaltouMemoria;
 		*tam=i;
 		i=0;
@@ -712,13 +718,12 @@ GRA_tpCondRet GRA_ObterArestasNo(GRA_tppGrafo grafo,int noId,int* refPtrIds,int 
 		do 
 		{	
 			acs=(GRA_tpAresta)LIS_ObterValor(la);
-			refPtrIds[i]=acs->verticeId;	
-			
+			(*refPtrIds)[i]=acs->noApontado->verticeId;	
+			i++; //Iterate is necessary
 		}	
 		while(LIS_AvancarElementoCorrente(la,1)!=LIS_CondRetFimLista);
 
-	}
-	while(LIS_AvancarElementoCorrente(l,1)!=LIS_CondRetFimLista);
+	
 	return GRA_CondRetOK;
 }
 /* Fim função: GRA  &Obter Arestas do No */
@@ -994,6 +999,16 @@ static void visit(GRA_noGrafo noCorr,int* visited,int tam,int* ordened)
 		
 		if(l&&LIS_IrInicioLista(l)!=LIS_CondRetListaVazia)
 		{
+			visited[noCorr->verticeId-1]=1; //Esse -1 é para que o último nóexista também
+		
+			/* Insira na ordem */
+		for(i=0;i<tam;i++)
+		{
+			if(ordened[i]==0)
+			{	ordened[i]=noCorr->verticeId;
+				break;
+			}
+		}
 			
 			do
 			{
@@ -1006,14 +1021,7 @@ static void visit(GRA_noGrafo noCorr,int* visited,int tam,int* ordened)
 			}
 			while(LIS_AvancarElementoCorrente(l,1)!=LIS_CondRetFimLista);
 		}
-	 visited[noCorr->verticeId-1]=1; //Esse -1 é para que o último nóexista também
-		for(i=0;i<tam;i++)
-		{
-			if(ordened[i]==0)
-			{	ordened[i]=noCorr->verticeId;
-				break;
-			}
-		}
+	 
 	}
 	return;
 }
